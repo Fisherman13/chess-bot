@@ -1,0 +1,35 @@
+/* general */
+body{
+	margin: 0px;
+}
+*{
+	font-family: monospace;
+}
+
+/* svg styling */
+.square{
+	/* stroke-width: 2px;
+	stroke: black; */
+	height: 100px;
+	width: 100px;
+}
+.piece{
+	height: 100px;
+	width: 100px;
+	cursor: pointer;
+}
+
+/* general */
+.title{
+    font-size: 92px;
+    margin: 0px;
+	margin-top: 10px;
+    text-align: center;
+}
+#board{
+	margin-top: 70px;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%);
+}
