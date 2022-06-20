@@ -14,54 +14,11 @@ const killColor = "#f36969";
 const checkColor = "blue"
 const secunColor = "purple";
 
-// pawn = 0
-// rook = 1;
-// knight = 2
-// bishop = 3
-// queen = 4
-// king = 5
-// empty = 6
-
-// starting from the piece itself, what directions&amount can the pieces move
-// const moveSets = [
-// 	[
-// 		// {x: 0, y: 1}
-// 	],	//pawn
-// 	[
-// 		/* top */ 		{x: 0, y: 1}, {x: 0, y: 2}, {x: 0, y: 3}, {x: 0, y: 4}, {x: 0, y: 5}, {x: 0, y: 6}, {x: 0, y: 7}, {x: 0, y: 8},
-// 		/* bottom */ 	{x: 0, y: -8}, {x: 0, y: -7}, {x: 0, y: -6}, {x: 0, y: -5}, {x: 0, y: -4}, {x: 0, y: -3}, {x: 0, y: -2}, {x: 0, y: -1},
-// 		/* left */		{x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 6, y: 0}, {x: 7, y: 0}, {x: 8, y: 0},
-// 		/* right */		{x: -1, y: 0}, {x: -2, y: 0}, {x: -3, y: 0}, {x: -4, y: 0}, {x: -5, y: 0}, {x: -6, y: 0}, {x: -7, y: 0}, {x: -8, y: 0}
-// 	],	// rook
-// 	[
-// 		/* top */ 		{x: 1, y: 2}, {x: -1, y: 2},
-// 		/* bottom */ 	{x: 1, y: -2}, {x: -1, y: -2},
-// 		/* left */		{x: 2, y: 1}, {x: 2, y: -1},
-// 		/* right */		{x: -2, y: 1}, {x: -2, y: -1}
-// 	],	// knight
-// 	[
-// 		{x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}, {x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8},
-// 		{x: -1, y: -1}, {x: -2, y: -2}, {x: -3, y: -3}, {x: -4, y: -4}, {x: -5, y: -5}, {x: -6, y: 6}, {x: -7, y: -7}, {x: -8, y: -8},
-// 		{x: -1, y: 1}, {x: -2, y: 2}, {x: -3, y: 3}, {x: -4, y: 4}, {x: -5, y: 5}, {x: -6, y: 6}, {x: -7, y: 7}, {x: -8, y: 8},
-// 		{x: 1, y: -1}, {x: 2, y: -2}, {x: 3, y: -3}, {x: 4, y: -4}, {x: 5, y: -5}, {x: 6, y: 6}, {x: 7, y: -7}, {x: 8, y: -8},
-// 	],	// bishop
-// 	[
-// 		{x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}, {x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8},
-// 		{x: -1, y: -1}, {x: -2, y: -2}, {x: -3, y: -3}, {x: -4, y: -4}, {x: -5, y: -5}, {x: -6, y: 6}, {x: -7, y: -7}, {x: -8, y: -8},
-// 		{x: -1, y: 1}, {x: -2, y: 2}, {x: -3, y: 3}, {x: -4, y: 4}, {x: -5, y: 5}, {x: -6, y: 6}, {x: -7, y: 7}, {x: -8, y: 8},
-// 		{x: 1, y: -1}, {x: 2, y: -2}, {x: 3, y: -3}, {x: 4, y: -4}, {x: 5, y: -5}, {x: 6, y: 6}, {x: 7, y: -7}, {x: 8, y: -8},
-// 		{x: 0, y: 1}, {x: 0, y: 2}, {x: 0, y: 3}, {x: 0, y: 4}, {x: 0, y: 5}, {x: 0, y: 6}, {x: 0, y: 7}, {x: 0, y: 8},
-// 		{x: 0, y: -1}, {x: 0, y: -2}, {x: 0, y: -3}, {x: 0, y: -4}, {x: 0, y: -5}, {x: 0, y: -6}, {x: 0, y: -7}, {x: 0, y: -8},
-// 		{x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 6, y: 0}, {x: 7, y: 0}, {x: 8, y: 0},
-// 		{x: -1, y: 0}, {x: -2, y: 0}, {x: -3, y: 0}, {x: -4, y: 0}, {x: -5, y: 0}, {x: -6, y: 0}, {x: -7, y: 0}, {x: -8, y: 0}
-// 	],	// queen
-// 	[
-// 		{x: 1, y: -1}, {x: 0, y: -1}, {x: 1, y: 1},
-// 		{x: 1, y: 0}, {x: -1, y: 0},
-// 		{x: -1, y: -1}, {x: 0, y: 1}, {x: -1, y: -1}
-// 	]	// king
-// ]
 const pieceWorth = [1, 5, 3, 3, 9, 0]
+
+let toggleMoves = false;
+let clickedPiece = null;
+let clickedLocation = null;
 
 document.addEventListener('DOMContentLoaded', init)
 
@@ -91,7 +48,7 @@ function createInternalBoard(){
 	createPiece("black", "knight",0 ,6);
 	createPiece("black", "rook",0 ,7);
 
-	for (let i = 2; i < 8; i++) {
+	for (let i = 5; i < 8; i++) {
 		createPiece("black", "pawn",1 ,i);
 	}
 
@@ -132,6 +89,10 @@ function createPiece(color, name, row, col){
 
 	piece.setAttribute("href", `img/${name}_${(color == "white") ? "w" : "b"}.svg`);
 
+	if(color != playerColor){
+		piece.setAttribute("style", "pointer-events: none");
+	}
+
 	// only add events if player is allowed to interact
 	// if(color == playerColor){ TODO uncomment
 		piece.addEventListener("click", a);
@@ -141,21 +102,33 @@ function createPiece(color, name, row, col){
 
 	boardEl.appendChild(piece);
 
+	board[row][col].element = piece;
+
 	function k(){
-		// TODO
-		console.log("TODO");
+		this.element.remove();
 	}
 	function h(){
-		highlightPiece(board[row][col], true);
-		highlightMoves(board[row][col], true);
+		if(!toggleMoves){
+			highlightPiece(board[row][col], true);
+			highlightMoves(board[row][col], true);
+		}
 	}
 	function a(){
-		let moves = getMoveset(pieceNameToInt(name), row, col);
-		console.log(moves);
+		if(clickedPiece == board[row][col] || clickedPiece == null){
+			toggleMoves = !toggleMoves;
+
+			if(toggleMoves){
+				clickedPiece = board[row][col];
+			}else{
+				clickedPiece = null
+			}
+		}
 	}
 	function r(){
-		highlightPiece(board[row][col], false);
-		highlightMoves(board[row][col], false);
+		if(!toggleMoves){
+			highlightPiece(board[row][col], false);
+			highlightMoves(board[row][col], false);
+		}
 	}
 }
 function highlightPiece(piece, state){
@@ -169,12 +142,15 @@ function highlightPiece(piece, state){
 	el.style = style;
 }
 function highlightMoves(piece, state){
-	let pieceX = piece.col;
-	let pieceY = piece.row;
 	let moves = getMovesetFromName(piece);
 	let style = "";
 	for(let i = 0; i < moves.length; i++){
 		subArray = moves[i];
+
+		// prevent the hover from sticking if a move is executed
+		if(!state){
+			document.getElementById(`${piece.row}-${piece.col}`).style = "";
+		}
 
 		if(i == 0){	// locations
 			if(state){
@@ -185,6 +161,16 @@ function highlightMoves(piece, state){
 				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
 		
 				el.style = style;
+
+				if(state){
+					// add move onclick listener
+					el.addEventListener("click", movePiece);
+					el.classList.add("pointer");
+				}else{
+					// remove move onclick listener
+					el.removeEventListener("click", movePiece);
+					el.classList.remove("pointer");
+				}
 			}
 		}
 		if(i == 1){	// kill moves
@@ -196,20 +182,70 @@ function highlightMoves(piece, state){
 				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
 		
 				el.style = style;
+
+				if(state){
+					el.addEventListener("click", killPiece);
+					el.classList.add("pointer");
+				}else{
+					el.removeEventListener("click", killPiece);
+					el.classList.remove("pointer");
+				}
 			}
 		}
 		if(i == 2){	// special moves
 
 		}
+
 	}
 }
-function checkMoves(){
+// TODO this duplicates
+function movePiece(){
+	let id = this.id.split("-");
+	let from = board[clickedPiece.row][clickedPiece.col]
+	let to = board[parseInt(id[0])][parseInt(id[1])]
+	let toRow = parseInt(id[0]);
+	let toCol = parseInt(id[1]);
 
+	highlightMoves(board[from.row][from.col], false);
+
+	// move images
+	from.element.setAttribute("x", (toCol * 100) + 1);
+	from.element.setAttribute("y", (toRow * 100) + 1);
+	from.row = toRow;
+	from.col = toCol;
+	
+	// update board
+	board[clickedPiece.col][clickedPiece.row] = {};
+	board[toRow][toCol] = from;
+
+	toggleMoves = false;
 }
+function killPiece(){
+	let id = this.id.split("-");	// TODO dont know how this can be done better
+	let from = board[clickedPiece.row][clickedPiece.col]
+	let to = board[parseInt(id[0])][parseInt(id[1])]
+
+	highlightMoves(board[from.row][from.col], false);
+
+	// move images
+	from.element.setAttribute("x", to.element.getAttribute("x"));
+	from.element.setAttribute("y", to.element.getAttribute("y"));
+	from.row = to.row;
+	from.col = to.col;
+	to.kill();
+	
+	// update board
+	board[from.row][from.col] = {};
+	board[to.row][to.col] = from;
+
+	toggleMoves = false;
+}
+
 function getMoveset(i, x, y){
 	let moves = [];
 	let openPositions = [];
 	let killMoves = [];
+	let specialMoves = [];
 	let miniBoard = minifyBoard();
 	let isWhite = miniBoard[x][y] < 9;
 
@@ -253,25 +289,21 @@ function getMoveset(i, x, y){
 
 	// rook specific checks
 	if(i == 1){
-		// bottom
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x + i2, y)){
 				break;
 			}
 		}
-		// left?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x, y + i2)){
 				break;
 			}
 		}
-		// right?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x - i2, y)){
 				break;
 			}
 		}
-		// top?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x, y - i2)){
 				break;
@@ -293,25 +325,21 @@ function getMoveset(i, x, y){
 
 	// bishop
 	if(i == 3){
-		// bottom
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x + i2, y + i2)){
 				break;
 			}
 		}
-		// left?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x - i2, y - i2)){
 				break;
 			}
 		}
-		// right?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x - i2, y + i2)){
 				break;
 			}
 		}
-		// top?
 		for (let i2 = 1; i2 < 8; i2++) {
 			if(checkPath(x + i2, y - i2)){
 				break;
@@ -321,12 +349,56 @@ function getMoveset(i, x, y){
 
 	// queen
 	if(i == 4){
-
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x + i2, y)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x, y + i2)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x - i2, y)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x, y - i2)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x + i2, y + i2)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x - i2, y - i2)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x - i2, y + i2)){
+				break;
+			}
+		}
+		for (let i2 = 1; i2 < 8; i2++) {
+			if(checkPath(x + i2, y - i2)){
+				break;
+			}
+		}
 	}
 
 	// king
-	if(i == 4){
+	if(i == 5){
+		// move pattern
+		let movePatern = [{x: 1, y: 0}, {x: 0, y: 1},{x: 1, y: 1}, {x: -1, y: 0},{x: 0, y: -1}, {x: -1, y: -1},{x: -1, y: 1}, {x: 1, y: -1}];
 
+		for (let i2 = 0; i2 < movePatern.length; i2++) {
+			checkPath(x + movePatern[i2].x, y + movePatern[i2].y)
+		}
 	}
 
 	function checkPath(checkX, checkY){
@@ -352,6 +424,7 @@ function getMoveset(i, x, y){
 
 	moves.push(openPositions);
 	moves.push(killMoves);
+	moves.push(specialMoves);
 
 	return moves;
 }
@@ -429,6 +502,7 @@ function createRect(row, col){
 
 	return square;
 }
-function movePiece(piece, to){
 
+function logError(msg){
+	document.getElementById("error").innerText = msg;
 }

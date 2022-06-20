@@ -18,6 +18,9 @@ body{
 	width: 100px;
 	cursor: pointer;
 }
+.pointer{
+	cursor: pointer;
+}
 
 /* general */
 .title{
@@ -25,6 +28,7 @@ body{
     margin: 0px;
 	margin-top: 10px;
     text-align: center;
+	user-select: none;
 }
 #board{
 	margin-top: 70px;
@@ -32,4 +36,12 @@ body{
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%);
+}
+
+/* error */
+.error{
+	text-align: center;
+    color: #ff3838;
+    font-size: 25px;
+    margin-top: 8px;
 }
