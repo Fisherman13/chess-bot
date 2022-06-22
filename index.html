@@ -5,7 +5,9 @@
 <title>Chess bot</title>
 
 <link rel="stylesheet" href="css/style.css"></link>
-<script src="js/javascript.js"></script>
+<script src="js/main.js"></script>
+<script src="js/mateCheck.js"></script>
+<script src="js/board.js"></script>
 
 <body>
 	<h1 class="title">Chess Bot</h1>
@@ -13,5 +15,14 @@
 		<rect width="802" height="802" style="stroke-width: 2px; stroke: black"></rect>
 	</svg>
 	<h3 class="error" id="error"></h3>
+
+	<div id="legend" class="legend-container">
+		
+	</div>
+
+	<div id="promotionOverlay" class="promotion-overlay">
+		<div id="promotionContainer" class="promotion-container">
+		</div>
+	</div>
 </body>
 </html>

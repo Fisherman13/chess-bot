@@ -1,0 +1,3 @@
+function mateCheck(color){
+
+}

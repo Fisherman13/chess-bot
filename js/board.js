@@ -1,35 +1,22 @@
-let boardEl = null
-let board = [];
-
-let isChecked = "none" 	// white | black | none
-let turnColor = "white"	// white | black
-
-const playerColor = "white";
-const botColor = (playerColor == "white") ? "black" : "white";
-
-const primColor = "orange";
-const primHover = "#fbd287"
-
-const killColor = "#f36969";
-const checkColor = "blue"
-const secunColor = "purple";
-
-const pieceWorth = [1, 5, 3, 3, 9, 0]
-
-let toggleMoves = false;
-let clickedPiece = null;
-let clickedLocation = null;
-
-document.addEventListener('DOMContentLoaded', init)
-
-function init(){
-	boardEl = document.getElementById("board");
-
-	createBoard();
-
-	createInternalBoard();
+function createBoard(){
+	for (let col = 0; col < 8; col++) {
+		for (let row = 0; row < 8; row++) {
+			boardEl.appendChild(createRect(row, col));
+		}
+	}
 }
+function createRect(row, col){
+	let square = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
 
+	square.setAttribute("class", "square");
+
+	square.setAttribute("x", (row * 100) + 1);
+	square.setAttribute("y", (col * 100) + 1);
+	square.setAttribute("fill", ((col + row) % 2) ? "lightgrey" : "white");
+	square.setAttribute("id", `${col}-${row}`);
+
+	return square;
+}
 function createInternalBoard(){
 	for (let row = 0; row < 8; row++) {
 		board.push([]);
@@ -89,16 +76,17 @@ function createPiece(color, name, row, col){
 
 	piece.setAttribute("href", `img/${name}_${(color == "white") ? "w" : "b"}.svg`);
 
-	if(color != playerColor){
+	if(color != PLAYER_COLOR){
 		piece.setAttribute("style", "pointer-events: none");
 	}
 
+	// TODO there is probably a beter way than using bind
 	// only add events if player is allowed to interact
-	// if(color == playerColor){ TODO uncomment
-		piece.addEventListener("click", a);
-		piece.addEventListener("mouseover", h);
-		piece.addEventListener("mouseout", r);
-	// }
+	if(color == PLAYER_COLOR){
+		piece.addEventListener("click", a.bind(null, board[row][col]));
+		piece.addEventListener("mouseover", h.bind(null, board[row][col]));
+		piece.addEventListener("mouseout", r.bind(null, board[row][col]));
+	}
 
 	boardEl.appendChild(piece);
 
@@ -107,27 +95,27 @@ function createPiece(color, name, row, col){
 	function k(){
 		this.element.remove();
 	}
-	function h(){
+	function h(piece){
 		if(!toggleMoves){
-			highlightPiece(board[row][col], true);
-			highlightMoves(board[row][col], true);
+			highlightPiece(board[piece.row][piece.col], true);
+			highlightMoves(board[piece.row][piece.col], true);
 		}
 	}
-	function a(){
-		if(clickedPiece == board[row][col] || clickedPiece == null){
+	function a(piece){
+		if(clickedPiece == board[piece.row][piece.col] || clickedPiece == null){
 			toggleMoves = !toggleMoves;
 
 			if(toggleMoves){
-				clickedPiece = board[row][col];
+				clickedPiece = board[piece.row][piece.col];
 			}else{
 				clickedPiece = null
 			}
 		}
 	}
-	function r(){
+	function r(piece){
 		if(!toggleMoves){
-			highlightPiece(board[row][col], false);
-			highlightMoves(board[row][col], false);
+			highlightPiece(board[piece.row][piece.col], false);
+			highlightMoves(board[piece.row][piece.col], false);
 		}
 	}
 }
@@ -136,10 +124,11 @@ function highlightPiece(piece, state){
 	let style = "";
 
 	if(state){
-		style = `fill: ${primHover}`;
+		style = `fill: ${COLOR_HOVER}`;
 	}
 
 	el.style = style;
+	
 }
 function highlightMoves(piece, state){
 	let moves = getMovesetFromName(piece);
@@ -154,7 +143,7 @@ function highlightMoves(piece, state){
 
 		if(i == 0){	// locations
 			if(state){
-				style = `fill: ${primHover}`;
+				style = `fill: ${COLOR_HOVER}`;
 			}
 
 			for (let i = 0; i < subArray.length; i++) {
@@ -175,7 +164,7 @@ function highlightMoves(piece, state){
 		}
 		if(i == 1){	// kill moves
 			if(state){
-				style = `fill: ${killColor}`;
+				style = `fill: ${COLOR_KILL}`;
 			}
 
 			for (let i = 0; i < subArray.length; i++) {
@@ -192,33 +181,53 @@ function highlightMoves(piece, state){
 				}
 			}
 		}
-		if(i == 2){	// special moves
+		if(i == 2){	// promotion
+			if(state){
+				style = `fill: ${COLOR_PROMOTION}`;
+			}
+
+			for (let i = 0; i < subArray.length; i++) {
+				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
+		
+				el.style = style;
+
+				if(state){
+					el.addEventListener("click", killPiece);
+					el.classList.add("pointer");
+				}else{
+					el.removeEventListener("click", killPiece);
+					el.classList.remove("pointer");
+				}
+			}
+		}
+		if(i == 3){	// castle
 
 		}
-
 	}
 }
-// TODO this duplicates
+
 function movePiece(){
 	let id = this.id.split("-");
 	let from = board[clickedPiece.row][clickedPiece.col]
-	let to = board[parseInt(id[0])][parseInt(id[1])]
 	let toRow = parseInt(id[0]);
 	let toCol = parseInt(id[1]);
 
 	highlightMoves(board[from.row][from.col], false);
 
-	// move images
+	// move image
 	from.element.setAttribute("x", (toCol * 100) + 1);
 	from.element.setAttribute("y", (toRow * 100) + 1);
+
+	board[clickedPiece.row][clickedPiece.col] = {};
+	
 	from.row = toRow;
 	from.col = toCol;
 	
 	// update board
-	board[clickedPiece.col][clickedPiece.row] = {};
 	board[toRow][toCol] = from;
 
 	toggleMoves = false;
+	clickedPiece = null
 }
 function killPiece(){
 	let id = this.id.split("-");	// TODO dont know how this can be done better
@@ -230,27 +239,37 @@ function killPiece(){
 	// move images
 	from.element.setAttribute("x", to.element.getAttribute("x"));
 	from.element.setAttribute("y", to.element.getAttribute("y"));
+
+	board[to.row][to.col] = board[from.row][from.col];
+	board[from.row][from.col] = {};
 	from.row = to.row;
 	from.col = to.col;
+
 	to.kill();
-	
-	// update board
-	board[from.row][from.col] = {};
-	board[to.row][to.col] = from;
 
 	toggleMoves = false;
+	clickedPiece = null
 }
 
 function getMoveset(i, x, y){
 	let moves = [];
 	let openPositions = [];
 	let killMoves = [];
-	let specialMoves = [];
+	let promotion = [];
+	let castle = [];
 	let miniBoard = minifyBoard();
 	let isWhite = miniBoard[x][y] < 9;
 
 	// pawn specific checks
 	if(i == 0){
+		// check if pawn can be promoted
+		let checkRow = (isWhite) ? 0 : 7;
+		if(x == checkRow){
+			showOverlay();
+			clickedPiece = board[x][y];
+			return [];
+		}
+
 		if(miniBoard[(isWhite) ? x - 1 : x + 1][y] == 6){
 			openPositions.push({x: x + ((isWhite) ? -1 : 1), y: y})
 		}		
@@ -261,20 +280,52 @@ function getMoveset(i, x, y){
 			}
 		}
 
-		// kills
+		// kills & promotion
 		let checkY = y + ((isWhite) ? -1 : 1);
 		let checkX = x + ((isWhite) ? -1 : 1);
 
 		if(checkX > -1 && checkX < 8 && checkY > -1 && checkY < 8){
 			if(miniBoard[checkX][checkY] != 6){
-				killMoves.push({x: checkX, y: checkY})
+				if(isWhite){
+					if(miniBoard[checkX][checkY] > 9){
+						killMoves.push({x: checkX, y: checkY})
+					}
+
+					if(checkX == 0){
+						promotion.push({x: checkX, y: checkY})
+					}
+				}else{
+					if(miniBoard[checkX][checkY] < 9){
+						killMoves.push({x: checkX, y: checkY})
+					}
+
+					if(checkX == 7){
+						promotion.push({x: checkX, y: checkY})
+					}
+				}
 			}
 	
 			checkY = y + ((isWhite) ? 1 : -1);
 
 			if(checkY > -1 && checkY < 8){
 				if(miniBoard[checkX][checkY] != 6){
-					killMoves.push({x: checkX, y: checkY})
+					if(isWhite){
+						if(miniBoard[checkX][checkY] > 9){
+							killMoves.push({x: checkX, y: checkY})
+						}
+
+						if(checkX == 0){
+							promotion.push({x: checkX, y: checkY})
+						}
+					}else{
+						if(miniBoard[checkX][checkY] < 9){
+							killMoves.push({x: checkX, y: checkY})
+						}
+
+						if(checkX == 7){
+							promotion.push({x: checkX, y: checkY})
+						}
+					}
 				}
 			}
 		}
@@ -283,8 +334,6 @@ function getMoveset(i, x, y){
 		
 		// https://sakkpalota.hu/index.php/en/chess/rules#pawn
 		// todo: check for EN PASSANT
-
-		// todo: check for promotion
 	}
 
 	// rook specific checks
@@ -424,22 +473,29 @@ function getMoveset(i, x, y){
 
 	moves.push(openPositions);
 	moves.push(killMoves);
-	moves.push(specialMoves);
+	moves.push(promotion);
+	moves.push(castle);
 
 	return moves;
 }
 function getMovesetFromName(piece){
 	return getMoveset(pieceNameToInt(piece.name), piece.row, piece.col);
 }
-function deepCopy(from, to){
-	for (let i = 0; i < from.length; i++) {
-		to.push(from[i]);
-	}
+function check(color){
+	highlightKing(color, false);
 }
-function rotateMoveSet(moves){
-	for (let i = 0; i < moves.length; i++) {
-		if(moves[i].y > 0){
-			moves[i].y = moves[i].y * -1;
+function mate(color){
+	highlightKing(color, true);
+}
+function highlightKing(color, isMate){
+	for (let i = 0; i < 8; i++) {
+		for (let i2 = 0; i2 < 8; i2++) {
+			let piece = board[i][i2];
+			if(piece.color == color && piece.name == "king"){
+				let color = (isMate) ? COLOR_MATE : COLOR_CHECK;
+				document.getElementById(`${piece.row}-${piece.col}`).style = `fill: ${color}`;
+				return;
+			}
 		}
 	}
 }
@@ -483,26 +539,33 @@ function pieceNameToInt(name){
 	}
 }
 
-function createBoard(){
-	for (let col = 0; col < 8; col++) {
-		for (let row = 0; row < 8; row++) {
-			boardEl.appendChild(createRect(row, col));
-		}
+function createPromotionOverlay(){
+	let el = document.getElementById("promotionContainer");
+	let names = ["queen", "rook", "bishop", "knight"]
+
+	for (let i = 0; i < 4; i++) {
+		let container = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
+		container.setAttribute("class", "promotion-item");
+		container.addEventListener("click", function(){
+			promotion(names[i]);
+		});
+
+		let image = new Image();
+		image.className = "promotion-image";
+		image.src = `img/${names[i]}_${(PLAYER_COLOR == "white") ? "w" : "b"}.svg`;
+
+		container.append(image);
+		el.append(container);
 	}
 }
-function createRect(row, col){
-	let square = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-
-	square.setAttribute("class", "square");
-
-	square.setAttribute("x", (row * 100) + 1);
-	square.setAttribute("y", (col * 100) + 1);
-	square.setAttribute("fill", ((col + row) % 2) ? "lightgrey" : "white");
-	square.setAttribute("id", `${col}-${row}`);
-
-	return square;
+function showOverlay(){
+	document.getElementById("promotionOverlay").style.display = "block";
 }
+function promotion(name){
+	clickedPiece.name = name;
+	clickedPiece.element.setAttribute('href', `img/${name}_${(clickedPiece.color == "white") ? "w" : "b"}.svg`);
 
-function logError(msg){
-	document.getElementById("error").innerText = msg;
+	document.getElementById("promotionOverlay").style.display = "none";
+
+	clickedPiece = null;
 }
