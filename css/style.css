@@ -17,6 +17,7 @@ body{
 	height: 100px;
 	width: 100px;
 	cursor: pointer;
+    transition: 0.5s cubic-bezier(0.50, 0, 0.15, 1);
 }
 .pointer{
 	cursor: pointer;

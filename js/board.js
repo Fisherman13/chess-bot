@@ -1,3 +1,5 @@
+const pieceOrder = ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"];
+
 function createBoard(){
 	for (let col = 0; col < 8; col++) {
 		for (let row = 0; row < 8; row++) {
@@ -9,7 +11,6 @@ function createRect(row, col){
 	let square = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
 
 	square.setAttribute("class", "square");
-
 	square.setAttribute("x", (row * 100) + 1);
 	square.setAttribute("y", (col * 100) + 1);
 	square.setAttribute("fill", ((col + row) % 2) ? "lightgrey" : "white");
@@ -25,38 +26,21 @@ function createInternalBoard(){
 		}
 	}
 
-	// WHITE
-	createPiece("black", "rook", 0 ,0);
-	createPiece("black", "knight", 0 ,1);
-	createPiece("black", "bishop", 0 ,2);
-	createPiece("black", "queen",0 ,3);
-	createPiece("black", "king",0 ,4);
-	createPiece("black", "bishop",0 ,5);
-	createPiece("black", "knight",0 ,6);
-	createPiece("black", "rook",0 ,7);
-
-	for (let i = 5; i < 8; i++) {
+	// BLACK
+	for (let i = 0; i < 8; i++) {
+		createPiece("black", pieceOrder[i], 0 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
 		createPiece("black", "pawn",1 ,i);
 	}
 
-	// BLACK
-	createPiece("white", "rook", 7 ,7);
-	createPiece("white", "knight", 7 ,6);
-	createPiece("white", "bishop", 7 ,5);
-	createPiece("white", "queen",7 ,3);
-	createPiece("white", "king",7 ,4);
-	createPiece("white", "bishop",7 ,2);
-	createPiece("white", "knight",7 ,1);
-	createPiece("white", "rook",7 ,0);
-
-	for (let i = 0; i < 7; i++) {
+	// WHITE
+	for (let i = 0; i < 8; i++) {
+		createPiece("white", pieceOrder[i], 7 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
 		createPiece("white", "pawn",6 ,i);
 	}
-
-	// TESTING REMOVE LATER
-	createPiece("black", "pawn",5 ,6);
-	createPiece("white", "pawn",2 ,4);
-	createPiece("white", "pawn",4 ,3);
 }
 function createPiece(color, name, row, col){
 	board[row][col] = {
@@ -200,8 +184,46 @@ function highlightMoves(piece, state){
 				}
 			}
 		}
-		if(i == 3){	// castle
+		if(i == 3){	// castle https://sakkpalota.hu/index.php/en/chess/rules#castle
+			if(state){
+				style = `fill: ${COLOR_CASTLE}`;
+			}
 
+			for (let i2 = 0; i2 < subArray.length; i2++) {
+				let castleMove = subArray[i2];
+
+				if(castleMove.y == 7){	// left
+					for (let i3 = 1; i3 < 3; i3++) {
+						let el = document.getElementById(`${(piece.color == "white") ? 7 : 0}-${7 - i3}`)
+						el.style = style;
+
+						if(state){
+							el.addEventListener("click", castle);
+							el.removeEventListener("click", movePiece);
+						}else{
+							el.removeEventListener("click", castle);
+						}
+					}
+					clickedPiece = piece;
+					
+				}else{	//right
+					for (let i3 = 1; i3 < 3; i3++) {
+						let el = document.getElementById(`${(piece.color == "white") ? 7 : 0}-${1 + i3}`)
+						el.style = style;
+						el.removeEventListener("click", movePiece);
+
+						if(state){
+							el.addEventListener("click", castle);
+							el.removeEventListener("click", movePiece);
+						}else{
+							el.removeEventListener("click", castle);
+						}
+						
+					}
+					clickedPiece = piece;
+				}
+				console.log(subArray);
+			}
 		}
 	}
 }
@@ -250,6 +272,47 @@ function killPiece(){
 	toggleMoves = false;
 	clickedPiece = null
 }
+function castle(){
+	let rook = clickedPiece;
+	let isWhite = clickedPiece.row == 7;
+	let king = board[(isWhite) ? 7 : 0][4];
+	let direction = clickedPiece.col == 7	// true is left
+
+	highlightMoves(board[rook.row][rook.col], false);
+
+	if(isWhite){
+		hasMoved[0] = true;
+		hasMoved[1] = true;
+	}else{
+		hasMoved[2] = true;
+		hasMoved[3] = true;
+	}
+
+	if(direction){
+		rook.col -= 2;
+		king.col += 2;
+
+		board[rook.row][rook.col] = board[rook.row][rook.col + 2];
+		board[rook.row][rook.col + 2] = {};
+
+		board[king.row][king.col] = board[king.row][king.col - 2];
+		board[king.row][king.col - 2] = {};
+	}else{
+		rook.col += 3;
+		king.col -= 2;
+
+		board[rook.row][rook.col] = board[rook.row][rook.col - 3];
+		board[rook.row][rook.col - 3] = {};
+
+		board[king.row][king.col] = board[king.row][king.col + 2];
+		board[king.row][king.col + 2] = {};
+	}
+	king.element.setAttribute("x", (king.col * 100) + 1);
+	rook.element.setAttribute("x", (rook.col * 100) + 1);
+
+	toggleMoves = false;
+	clickedPiece = null
+}
 
 function getMoveset(i, x, y){
 	let moves = [];
@@ -270,8 +333,13 @@ function getMoveset(i, x, y){
 			return [];
 		}
 
+		let checkX = x + ((isWhite) ? -1 : 1);
 		if(miniBoard[(isWhite) ? x - 1 : x + 1][y] == 6){
-			openPositions.push({x: x + ((isWhite) ? -1 : 1), y: y})
+			openPositions.push({x: checkX, y: y})
+			
+			if(checkX == 0){
+				promotion.push({x: checkX, y: y})
+			}
 		}		
 
 		if(x == ((isWhite) ? 6 : 1)){
@@ -282,25 +350,25 @@ function getMoveset(i, x, y){
 
 		// kills & promotion
 		let checkY = y + ((isWhite) ? -1 : 1);
-		let checkX = x + ((isWhite) ? -1 : 1);
+		checkX = x + ((isWhite) ? -1 : 1);
 
 		if(checkX > -1 && checkX < 8 && checkY > -1 && checkY < 8){
 			if(miniBoard[checkX][checkY] != 6){
 				if(isWhite){
 					if(miniBoard[checkX][checkY] > 9){
 						killMoves.push({x: checkX, y: checkY})
-					}
 
-					if(checkX == 0){
-						promotion.push({x: checkX, y: checkY})
+						if(checkX == 0){
+							promotion.push({x: checkX, y: checkY})
+						}
 					}
 				}else{
 					if(miniBoard[checkX][checkY] < 9){
 						killMoves.push({x: checkX, y: checkY})
-					}
 
-					if(checkX == 7){
-						promotion.push({x: checkX, y: checkY})
+						if(checkX == 7){
+							promotion.push({x: checkX, y: checkY})
+						}
 					}
 				}
 			}
@@ -312,25 +380,23 @@ function getMoveset(i, x, y){
 					if(isWhite){
 						if(miniBoard[checkX][checkY] > 9){
 							killMoves.push({x: checkX, y: checkY})
-						}
 
-						if(checkX == 0){
-							promotion.push({x: checkX, y: checkY})
+							if(checkX == 0){
+								promotion.push({x: checkX, y: checkY})
+							}
 						}
 					}else{
 						if(miniBoard[checkX][checkY] < 9){
 							killMoves.push({x: checkX, y: checkY})
-						}
 
-						if(checkX == 7){
-							promotion.push({x: checkX, y: checkY})
+							if(checkX == 7){
+								promotion.push({x: checkX, y: checkY})
+							}
 						}
 					}
 				}
 			}
 		}
-
-		
 		
 		// https://sakkpalota.hu/index.php/en/chess/rules#pawn
 		// todo: check for EN PASSANT
@@ -338,23 +404,51 @@ function getMoveset(i, x, y){
 
 	// rook specific checks
 	if(i == 1){
-		for (let i2 = 1; i2 < 8; i2++) {
+		for (let i2 = 1; i2 < 8; i2++) {	// down
 			if(checkPath(x + i2, y)){
 				break;
 			}
 		}
-		for (let i2 = 1; i2 < 8; i2++) {
+		for (let i2 = 1; i2 < 8; i2++) {	// right
 			if(checkPath(x, y + i2)){
+				if(miniBoard[x][y + i2] == 5 || miniBoard[x][y + i2] == 15){
+					if(isWhite){
+						if(hasMoved[0] || hasMoved[1]){
+							break;
+						}
+					}else{
+						if(hasMoved[2] || hasMoved[3]){
+							break;
+						}
+					}
+
+					castle.push({x: x, y: y})
+				}
+
 				break;
 			}
 		}
-		for (let i2 = 1; i2 < 8; i2++) {
+		for (let i2 = 1; i2 < 8; i2++) {	// up
 			if(checkPath(x - i2, y)){
 				break;
 			}
 		}
-		for (let i2 = 1; i2 < 8; i2++) {
+		for (let i2 = 1; i2 < 8; i2++) {	// left
 			if(checkPath(x, y - i2)){
+				if(miniBoard[x][y - i2] == 5 || miniBoard[x][y - i2] == 15){
+					if(isWhite){
+						if(hasMoved[0] || hasMoved[1]){
+							break;
+						}
+					}else{
+						if(hasMoved[2] || hasMoved[3]){
+							break;
+						}
+					}
+
+					castle.push({x: x, y: y})
+				}
+
 				break;
 			}
 		}
