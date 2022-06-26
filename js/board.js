@@ -1,6 +1,8 @@
 const pieceOrder = ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"];
 
 function createBoard(){
+	let boardEl = document.getElementById("board");
+
 	for (let col = 0; col < 8; col++) {
 		for (let row = 0; row < 8; row++) {
 			boardEl.appendChild(createRect(row, col));
@@ -20,9 +22,9 @@ function createRect(row, col){
 }
 function createInternalBoard(){
 	for (let row = 0; row < 8; row++) {
-		board.push([]);
+		UIboard.push([]);
 		for (let col = 0; col < 8; col++) {
-			board[row].push({});
+			UIboard[row].push({});
 		}
 	}
 
@@ -41,9 +43,16 @@ function createInternalBoard(){
 	for (let i = 0; i < 8; i++) {
 		createPiece("white", "pawn",6 ,i);
 	}
+
+	// createPiece("black", "king",0 ,4);
+	// createPiece("black", "bishop",1 ,4);
+	// createPiece("white", "pawn",2 ,2);
+	// createPiece("white", "rook",6 ,4);
 }
 function createPiece(color, name, row, col){
-	board[row][col] = {
+	let boardEl = document.getElementById("board")
+
+	UIboard[row][col] = {
 		color: color,
 		name: name,
 		kill: k,
@@ -67,30 +76,34 @@ function createPiece(color, name, row, col){
 	// TODO there is probably a beter way than using bind
 	// only add events if player is allowed to interact
 	if(color == PLAYER_COLOR){
-		piece.addEventListener("click", a.bind(null, board[row][col]));
-		piece.addEventListener("mouseover", h.bind(null, board[row][col]));
-		piece.addEventListener("mouseout", r.bind(null, board[row][col]));
+		piece.addEventListener("click", a.bind(null, UIboard[row][col]));
+		piece.addEventListener("mouseover", h.bind(null, UIboard[row][col]));
+		piece.addEventListener("mouseout", r.bind(null, UIboard[row][col]));
 	}
 
 	boardEl.appendChild(piece);
 
-	board[row][col].element = piece;
+	UIboard[row][col].element = piece;
 
 	function k(){
 		this.element.remove();
 	}
 	function h(piece){
+		if(piece.color != turnColor){
+			return;
+		}
+		
 		if(!toggleMoves){
-			highlightPiece(board[piece.row][piece.col], true);
-			highlightMoves(board[piece.row][piece.col], true);
+			highlightPiece(UIboard[piece.row][piece.col], true);
+			highlightMoves(UIboard[piece.row][piece.col], true);
 		}
 	}
 	function a(piece){
-		if(clickedPiece == board[piece.row][piece.col] || clickedPiece == null){
+		if(clickedPiece == UIboard[piece.row][piece.col] || clickedPiece == null){
 			toggleMoves = !toggleMoves;
 
 			if(toggleMoves){
-				clickedPiece = board[piece.row][piece.col];
+				clickedPiece = UIboard[piece.row][piece.col];
 			}else{
 				clickedPiece = null
 			}
@@ -98,8 +111,8 @@ function createPiece(color, name, row, col){
 	}
 	function r(piece){
 		if(!toggleMoves){
-			highlightPiece(board[piece.row][piece.col], false);
-			highlightMoves(board[piece.row][piece.col], false);
+			highlightPiece(UIboard[piece.row][piece.col], false);
+			highlightMoves(UIboard[piece.row][piece.col], false);
 		}
 	}
 }
@@ -184,7 +197,7 @@ function highlightMoves(piece, state){
 				}
 			}
 		}
-		if(i == 3){	// castle https://sakkpalota.hu/index.php/en/chess/rules#castle
+		if(i == 3){	// castle
 			if(state){
 				style = `fill: ${COLOR_CASTLE}`;
 			}
@@ -230,55 +243,59 @@ function highlightMoves(piece, state){
 
 function movePiece(){
 	let id = this.id.split("-");
-	let from = board[clickedPiece.row][clickedPiece.col]
+	let from = UIboard[clickedPiece.row][clickedPiece.col]
 	let toRow = parseInt(id[0]);
 	let toCol = parseInt(id[1]);
 
-	highlightMoves(board[from.row][from.col], false);
+	highlightMoves(UIboard[from.row][from.col], false);
 
 	// move image
 	from.element.setAttribute("x", (toCol * 100) + 1);
 	from.element.setAttribute("y", (toRow * 100) + 1);
 
-	board[clickedPiece.row][clickedPiece.col] = {};
+	UIboard[clickedPiece.row][clickedPiece.col] = {};
 	
 	from.row = toRow;
 	from.col = toCol;
 	
 	// update board
-	board[toRow][toCol] = from;
+	UIboard[toRow][toCol] = from;
 
 	toggleMoves = false;
 	clickedPiece = null
+
+	endturn();
 }
 function killPiece(){
 	let id = this.id.split("-");	// TODO dont know how this can be done better
-	let from = board[clickedPiece.row][clickedPiece.col]
-	let to = board[parseInt(id[0])][parseInt(id[1])]
+	let from = UIboard[clickedPiece.row][clickedPiece.col]
+	let to = UIboard[parseInt(id[0])][parseInt(id[1])]
 
-	highlightMoves(board[from.row][from.col], false);
+	highlightMoves(UIboard[from.row][from.col], false);
 
 	// move images
 	from.element.setAttribute("x", to.element.getAttribute("x"));
 	from.element.setAttribute("y", to.element.getAttribute("y"));
 
-	board[to.row][to.col] = board[from.row][from.col];
-	board[from.row][from.col] = {};
+	UIboard[to.row][to.col] = UIboard[from.row][from.col];
+	UIboard[from.row][from.col] = {};
 	from.row = to.row;
 	from.col = to.col;
 
 	to.kill();
 
 	toggleMoves = false;
-	clickedPiece = null
+	clickedPiece = null;
+
+	endturn();
 }
 function castle(){
 	let rook = clickedPiece;
 	let isWhite = clickedPiece.row == 7;
-	let king = board[(isWhite) ? 7 : 0][4];
+	let king = UIboard[(isWhite) ? 7 : 0][4];
 	let direction = clickedPiece.col == 7	// true is left
 
-	highlightMoves(board[rook.row][rook.col], false);
+	highlightMoves(UIboard[rook.row][rook.col], false);
 
 	if(isWhite){
 		hasMoved[0] = true;
@@ -292,26 +309,28 @@ function castle(){
 		rook.col -= 2;
 		king.col += 2;
 
-		board[rook.row][rook.col] = board[rook.row][rook.col + 2];
-		board[rook.row][rook.col + 2] = {};
+		UIboard[rook.row][rook.col] = UIboard[rook.row][rook.col + 2];
+		UIboard[rook.row][rook.col + 2] = {};
 
-		board[king.row][king.col] = board[king.row][king.col - 2];
-		board[king.row][king.col - 2] = {};
+		UIboard[king.row][king.col] = UIboard[king.row][king.col - 2];
+		UIboard[king.row][king.col - 2] = {};
 	}else{
 		rook.col += 3;
 		king.col -= 2;
 
-		board[rook.row][rook.col] = board[rook.row][rook.col - 3];
-		board[rook.row][rook.col - 3] = {};
+		UIboard[rook.row][rook.col] = UIboard[rook.row][rook.col - 3];
+		UIboard[rook.row][rook.col - 3] = {};
 
-		board[king.row][king.col] = board[king.row][king.col + 2];
-		board[king.row][king.col + 2] = {};
+		UIboard[king.row][king.col] = UIboard[king.row][king.col + 2];
+		UIboard[king.row][king.col + 2] = {};
 	}
 	king.element.setAttribute("x", (king.col * 100) + 1);
 	rook.element.setAttribute("x", (rook.col * 100) + 1);
 
 	toggleMoves = false;
-	clickedPiece = null
+	clickedPiece = null;
+
+	endturn();
 }
 
 function getMoveset(i, x, y){
@@ -320,6 +339,7 @@ function getMoveset(i, x, y){
 	let killMoves = [];
 	let promotion = [];
 	let castle = [];
+	let checks = [];
 	let miniBoard = minifyBoard();
 	let isWhite = miniBoard[x][y] < 9;
 
@@ -329,7 +349,7 @@ function getMoveset(i, x, y){
 		let checkRow = (isWhite) ? 0 : 7;
 		if(x == checkRow){
 			showOverlay();
-			clickedPiece = board[x][y];
+			clickedPiece = UIboard[x][y];
 			return [];
 		}
 
@@ -356,7 +376,7 @@ function getMoveset(i, x, y){
 			if(miniBoard[checkX][checkY] != 6){
 				if(isWhite){
 					if(miniBoard[checkX][checkY] > 9){
-						killMoves.push({x: checkX, y: checkY})
+						addToKillMoves(checkX, checkY);
 
 						if(checkX == 0){
 							promotion.push({x: checkX, y: checkY})
@@ -364,7 +384,7 @@ function getMoveset(i, x, y){
 					}
 				}else{
 					if(miniBoard[checkX][checkY] < 9){
-						killMoves.push({x: checkX, y: checkY})
+						addToKillMoves(checkX, checkY);
 
 						if(checkX == 7){
 							promotion.push({x: checkX, y: checkY})
@@ -379,7 +399,7 @@ function getMoveset(i, x, y){
 				if(miniBoard[checkX][checkY] != 6){
 					if(isWhite){
 						if(miniBoard[checkX][checkY] > 9){
-							killMoves.push({x: checkX, y: checkY})
+							addToKillMoves(checkX, checkY);
 
 							if(checkX == 0){
 								promotion.push({x: checkX, y: checkY})
@@ -387,7 +407,7 @@ function getMoveset(i, x, y){
 						}
 					}else{
 						if(miniBoard[checkX][checkY] < 9){
-							killMoves.push({x: checkX, y: checkY})
+							addToKillMoves(checkX, checkY);
 
 							if(checkX == 7){
 								promotion.push({x: checkX, y: checkY})
@@ -452,8 +472,6 @@ function getMoveset(i, x, y){
 				break;
 			}
 		}
-
-		// TODO: check for castle
 	}
 
 	// knight
@@ -554,14 +572,22 @@ function getMoveset(i, x, y){
 		}else{
 			if(isWhite){
 				if(miniBoard[checkX][checkY] > 9){
-					killMoves.push({x: checkX, y: checkY})
+					addToKillMoves(checkX, checkY);
 				}
 			}else{
 				if(miniBoard[checkX][checkY] < 10){
-					killMoves.push({x: checkX, y: checkY})
+					addToKillMoves(checkX, checkY);
 				}
 			}
 			return true;
+		}
+	}
+
+	function addToKillMoves(x, y){
+		if(miniBoard[x][y] == 5 || miniBoard[x][y] == 15){
+			checks.push({x: x, y: y});
+		}else{
+			killMoves.push({x: x, y: y});
 		}
 	}
 
@@ -569,29 +595,12 @@ function getMoveset(i, x, y){
 	moves.push(killMoves);
 	moves.push(promotion);
 	moves.push(castle);
+	moves.push(checks);
 
 	return moves;
 }
 function getMovesetFromName(piece){
 	return getMoveset(pieceNameToInt(piece.name), piece.row, piece.col);
-}
-function check(color){
-	highlightKing(color, false);
-}
-function mate(color){
-	highlightKing(color, true);
-}
-function highlightKing(color, isMate){
-	for (let i = 0; i < 8; i++) {
-		for (let i2 = 0; i2 < 8; i2++) {
-			let piece = board[i][i2];
-			if(piece.color == color && piece.name == "king"){
-				let color = (isMate) ? COLOR_MATE : COLOR_CHECK;
-				document.getElementById(`${piece.row}-${piece.col}`).style = `fill: ${color}`;
-				return;
-			}
-		}
-	}
 }
 
 function minifyBoard(){
@@ -603,8 +612,8 @@ function minifyBoard(){
 
 	for (let col = 0; col < 8; col++) {
 		for (let row = 0; row < 8; row++) {
-			let name = board[row][col].name
-			let color = (board[row][col].color == "white");
+			let name = UIboard[row][col].name
+			let color = (UIboard[row][col].color == "white");
 	
 			if(name != null){
 				r[row].push(pieceNameToInt(name) + ((!color) ? 10 : 0));
@@ -661,5 +670,10 @@ function promotion(name){
 
 	document.getElementById("promotionOverlay").style.display = "none";
 
+	endturn();
+
 	clickedPiece = null;
+}
+function executeBotMove(board, to, from){
+    
 }

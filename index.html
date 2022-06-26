@@ -8,16 +8,57 @@
 <script src="js/main.js"></script>
 <script src="js/mateCheck.js"></script>
 <script src="js/board.js"></script>
+<script src="js/bot.js"></script>
 
 <body>
 	<h1 class="title">Chess Bot</h1>
-	<svg id="board" width="802" height="802">
-		<rect width="802" height="802" style="stroke-width: 2px; stroke: black"></rect>
-	</svg>
+
 	<h3 class="error" id="error"></h3>
 
+	<div class="board-container">
+		<svg id="board" width="802" height="802">
+			<rect width="802" height="802" style="stroke-width: 2px; stroke: black"></rect>
+		</svg>
+	</div>
+
 	<div id="legend" class="legend-container">
-		
+		<h3 class="legend-title">Color legend</h3>
+		<div class="divider"></div>
+
+		<div class="legend-item-row">
+			<div class="legend-item">
+				<p class="legend-text">Move</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorMove" class="legend-color"></div>
+			</div>
+			<div class="legend-item">
+				<p class="legend-text">Kill</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorKill" class="legend-color"></div>
+			</div>
+			<div class="legend-item">
+				<p class="legend-text">Castle</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorCastle" class="legend-color"></div>
+			</div>
+		</div>
+		<div class="legend-item-row">
+			<div class="legend-item">
+				<p class="legend-text">Promotion</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorPromotion" class="legend-color"></div>
+			</div>
+			<div class="legend-item">
+				<p class="legend-text">Check</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorCheck" class="legend-color"></div>
+			</div>
+			<div class="legend-item">
+				<p class="legend-text">Mate</p>
+				<p class="legend-text-divider">:</p>
+				<div id="colorMate" class="legend-color"></div>
+			</div>
+		</div>
 	</div>
 
 	<div id="promotionOverlay" class="promotion-overlay">

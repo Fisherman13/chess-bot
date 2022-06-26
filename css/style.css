@@ -30,21 +30,23 @@ body{
 	margin-top: 10px;
     text-align: center;
 	user-select: none;
+    white-space: nowrap;
+}
+.board-container{
+    margin-top: 70px;
+    width: 802px;
+    margin: auto;
 }
 #board{
-	margin-top: 70px;
-    position: absolute;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%);
 }
 
 /* error */
 .error{
 	text-align: center;
-    color: #ff3838;
-    font-size: 25px;
-    margin-top: 8px;
+    color: white;
+    font-size: 26px;
+    margin-top: 0px;
+    height: 20px;
 }
 
 /* overlay */
@@ -79,4 +81,46 @@ body{
     width: fit-content;
     margin: auto;
     margin-top: 40vh;
+}
+
+/* legend */
+.legend-container{
+    margin-top: 50px;
+}
+.legend-color{
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    background-color: red;
+}
+.legend-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.legend-text{
+    margin: 0px;
+    font-size: 26px;
+    width: 133px;
+    text-align: center;
+}
+.legend-text-divider{
+    margin: 0px;
+    font-size: 23px;
+    padding: 0px 10px 0px 10px;
+}
+.divider{
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid lightgray;
+}
+.legend-title{
+    font-size: 30px;
+    margin: 5px 0px 5px 0px;
+    text-align: center;
+}
+.legend-item-row{
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
 }

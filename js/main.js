@@ -4,13 +4,13 @@
 // turns
 // the bot part
 
-const PLAYER_COLOR = "black";
+const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
 const COLOR_HOVER = "#fbd287"
 const COLOR_KILL = "#f36969";
-const COLOR_CASTLE = "rgb(163 255 251)";
-const COLOR_PROMOTION = "purple";
+const COLOR_CASTLE = "rgb(209 90 209)";
+const COLOR_PROMOTION = "#952495";
 const COLOR_CHECK = "#6e6eff"
 const COLOR_MATE = "#2525ff"
 
@@ -22,48 +22,45 @@ let toggleMoves = false;
 let clickedPiece = null;
 let clickedLocation = null;
 
-let boardEl = null
-let board = [];
+let UIboard = [];
+let	board = [];
 
 let isChecked = "none" 	// white | black | none
-let turnColor = "none"	// white | black | none
+let turnColor = "white"	// white | black 	TODO change to white
 let finished = false;
 
 document.addEventListener('DOMContentLoaded', init)
 
 function init(){
-	boardEl = document.getElementById("board");
-
 	createBoard();
 
 	createInternalBoard();
 
 	createPromotionOverlay();
 
-	createLegend();
-
-	startGameCycle();
-}
-
-function startGameCycle(){
-	turnColor = "white";
-
-	setInterval(cycle, 250)
-}
-function cycle(){
-	
+	colorLegend();
 }
 
 function logError(msg){
 	document.getElementById("error").innerText = msg;
 }
 
-function createLegend(){
-
-}
-
 function endturn(){
 	turnColor = (turnColor == "white") ? "black" : "white";
 
 	mateCheck();
+
+	// let move = botRandom();
+	// executeBotMove(board, move[0], move[1])
+
+	turnColor = (turnColor == "white") ? "black" : "white";
+}
+
+function colorLegend(){
+	document.getElementById("colorMove").style = `background-color: ${COLOR_HOVER}`
+	document.getElementById("colorKill").style = `background-color: ${COLOR_KILL}`
+	document.getElementById("colorCastle").style = `background-color: ${COLOR_CASTLE}`
+	document.getElementById("colorPromotion").style = `background-color: ${COLOR_PROMOTION}`
+	document.getElementById("colorCheck").style = `background-color: ${COLOR_CHECK}`
+	document.getElementById("colorMate").style = `background-color: ${COLOR_MATE}`
 }
