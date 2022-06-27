@@ -1,8 +1,5 @@
 // TODO:
-// legend
 // stats
-// turns
-// the bot part
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -15,6 +12,8 @@ const COLOR_CHECK = "#6e6eff"
 const COLOR_MATE = "#2525ff"
 
 const pieceWorth = [1, 5, 3, 3, 9, 0]
+const BOT_CHECK_DELAY = 100;
+const BOT_MOVE_DELAY = 500;
 
 // keep track if the rooks & kings have moved for Castling
 let hasMoved = [false, false, false, false]
@@ -25,34 +24,53 @@ let clickedLocation = null;
 let UIboard = [];
 let	board = [];
 
-let isChecked = "none" 	// white | black | none
 let turnColor = "white"	// white | black 	TODO change to white
-let finished = false;
+let finishedPromotion = true;
+let isBotWaiting = false;
 
 document.addEventListener('DOMContentLoaded', init)
 
 function init(){
-	createBoard();
+	createUIBoard();
 
 	createInternalBoard();
 
 	createPromotionOverlay();
 
 	colorLegend();
+
+	setInterval(checkBot, BOT_CHECK_DELAY);
 }
 
 function logError(msg){
 	document.getElementById("error").innerText = msg;
 }
 
-function endturn(){
-	turnColor = (turnColor == "white") ? "black" : "white";
+function checkBot(){
+	if(turnColor != BOT_COLOR) return
 
-	mateCheck();
+	if(isBotWaiting) return
 
-	// let move = botRandom();
-	// executeBotMove(board, move[0], move[1])
+	isBotWaiting = true;
 
+	setTimeout(function() {
+		board = minifyBoard();
+		mateCheck(board, (turnColor == "white"));
+
+		let move = botRandom();
+
+		if(move == null){
+			// TODO finished
+			return;
+		}
+
+		executeBotMove(move)
+
+		isBotWaiting = false;
+	}, BOT_MOVE_DELAY);
+}
+function endTurn(){
+	console.log("ending turn " + turnColor);
 	turnColor = (turnColor == "white") ? "black" : "white";
 }
 

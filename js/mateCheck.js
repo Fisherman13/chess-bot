@@ -1,7 +1,7 @@
 let checkedSquare = null;
 
-function mateCheck(){
-    let allChecks = getCheckedPieces();
+function mateCheck(board, white){
+    let allChecks = getCheckedPieces(board, white);
 
     if(allChecks.length == 0){
         highlightKing("white", false, false);
@@ -9,13 +9,10 @@ function mateCheck(){
         return;
     }
 
-    check((allChecks[0].c == "b") ? "black" : "white", false, true);
-    
-    console.log(allChecks);
+    check((white) ? "white" : "black", false, true);
 }
 
-function getCheckedPieces(){
-    let miniBoard = minifyBoard();
+function getCheckedPieces(board, white){
     let r = [];
 
     for (let x = 0; x < 8; x++) {
@@ -25,13 +22,23 @@ function getCheckedPieces(){
     }
 
     function checkMoves(x, y){
-        const piece = miniBoard[x][y];
+        const piece = board[x][y];
 
         if(piece == 6){
             return;
         }
 
-        const moveSet = getMoveset(piece, x, y);
+        if(white){
+            if(piece < 9){
+                return;
+            }
+        }else{
+            if(piece > 9){
+                return;
+            }
+        }
+
+        const moveSet = getMoveset(board, piece, x, y);
 
         // pawn being promoted
         if(moveSet.length == 0){
@@ -41,10 +48,8 @@ function getCheckedPieces(){
         if(moveSet[4].length == 0){
             return;
         }
-        
-        const color = (miniBoard[moveSet[4][0].x][moveSet[4][0].y] == 15) ? "b" : "w";
 
-        r.push({c: color, x: x, y: y})
+        r.push({x: x, y: y})
     }
 
     return r;
