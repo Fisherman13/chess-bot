@@ -37,7 +37,8 @@ body{
     width: 802px;
     margin: auto;
 }
-#board{
+.flip{
+    transform: rotate(180deg);
 }
 
 /* error */

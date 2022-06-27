@@ -49,7 +49,7 @@ function createInternalBoard(){
 	// createPiece("white", "pawn",2 ,2);
 	// createPiece("white", "rook",6 ,4);
 
-	board = minifyBoard();
+	board = minifyUIBoard();
 }
 function createPiece(color, name, row, col){
 	let boardEl = document.getElementById("board")
@@ -362,8 +362,7 @@ function getMoveset(board, i, x, y){
 	let promotion = [];
 	let castle = [];
 	let checks = [];
-	let miniBoard = board;
-	let isWhite = miniBoard[x][y] < 9;
+	let isWhite = board[x][y] < 9;
 
 	// pawn specific checks
 	if(i == 0){
@@ -383,7 +382,7 @@ function getMoveset(board, i, x, y){
 		}
 
 		let checkX = x + ((isWhite) ? -1 : 1);
-		if(miniBoard[(isWhite) ? x - 1 : x + 1][y] == 6){
+		if(board[(isWhite) ? x - 1 : x + 1][y] == 6){
 			addToAr(openPositions, checkX, y);
 			
 			if(checkX == 0){
@@ -392,7 +391,7 @@ function getMoveset(board, i, x, y){
 		}		
 
 		if(x == ((isWhite) ? 6 : 1)){
-			if(miniBoard[(isWhite) ? x - 2 : x + 2][y] == 6 && miniBoard[(isWhite) ? x - 1 : x + 1][y] == 6){
+			if(board[(isWhite) ? x - 2 : x + 2][y] == 6 && board[(isWhite) ? x - 1 : x + 1][y] == 6){
 				addToAr(openPositions, x + ((isWhite) ? -2 : 2), y);
 			}
 		}
@@ -402,9 +401,9 @@ function getMoveset(board, i, x, y){
 		checkX = x + ((isWhite) ? -1 : 1);
 
 		if(checkX > -1 && checkX < 8 && checkY > -1 && checkY < 8){
-			if(miniBoard[checkX][checkY] != 6){
+			if(board[checkX][checkY] != 6){
 				if(isWhite){
-					if(miniBoard[checkX][checkY] > 9){
+					if(board[checkX][checkY] > 9){
 						addToKillMoves(checkX, checkY);
 
 						if(checkX == 0){
@@ -412,7 +411,7 @@ function getMoveset(board, i, x, y){
 						}
 					}
 				}else{
-					if(miniBoard[checkX][checkY] < 9){
+					if(board[checkX][checkY] < 9){
 						addToKillMoves(checkX, checkY);
 
 						if(checkX == 7){
@@ -425,9 +424,9 @@ function getMoveset(board, i, x, y){
 			checkY = y + ((isWhite) ? 1 : -1);
 
 			if(checkY > -1 && checkY < 8){
-				if(miniBoard[checkX][checkY] != 6){
+				if(board[checkX][checkY] != 6){
 					if(isWhite){
-						if(miniBoard[checkX][checkY] > 9){
+						if(board[checkX][checkY] > 9){
 							addToKillMoves(checkX, checkY);
 
 							if(checkX == 0){
@@ -435,7 +434,7 @@ function getMoveset(board, i, x, y){
 							}
 						}
 					}else{
-						if(miniBoard[checkX][checkY] < 9){
+						if(board[checkX][checkY] < 9){
 							addToKillMoves(checkX, checkY);
 
 							if(checkX == 7){
@@ -460,7 +459,7 @@ function getMoveset(board, i, x, y){
 		}
 		for (let i2 = 1; i2 < 8; i2++) {	// right
 			if(checkPath(x, y + i2)){
-				if(miniBoard[x][y + i2] == 5 || miniBoard[x][y + i2] == 15){
+				if(board[x][y + i2] == 5 || board[x][y + i2] == 15){
 					if(isWhite){
 						if(hasMoved[0] || hasMoved[1]){
 							break;
@@ -484,7 +483,7 @@ function getMoveset(board, i, x, y){
 		}
 		for (let i2 = 1; i2 < 8; i2++) {	// left
 			if(checkPath(x, y - i2)){
-				if(miniBoard[x][y - i2] == 5 || miniBoard[x][y - i2] == 15){
+				if(board[x][y - i2] == 5 || board[x][y - i2] == 15){
 					if(isWhite){
 						if(hasMoved[0] || hasMoved[1]){
 							break;
@@ -596,15 +595,15 @@ function getMoveset(board, i, x, y){
 			return false;
 		}
 
-		if(miniBoard[checkX][checkY] == 6){
+		if(board[checkX][checkY] == 6){
 			addToAr(openPositions, checkX, checkY);
 		}else{
 			if(isWhite){
-				if(miniBoard[checkX][checkY] > 9){
+				if(board[checkX][checkY] > 9){
 					addToKillMoves(checkX, checkY);
 				}
 			}else{
-				if(miniBoard[checkX][checkY] < 10){
+				if(board[checkX][checkY] < 10){
 					addToKillMoves(checkX, checkY);
 				}
 			}
@@ -613,14 +612,14 @@ function getMoveset(board, i, x, y){
 	}
 
 	function addToKillMoves(toX, toY){
-		if(miniBoard[toX][toY] == 5 || miniBoard[toX][toY] == 15){
+		if(board[toX][toY] == 5 || board[toX][toY] == 15){
 			addToAr(checks, toX, toY);
 		}else{
 			addToAr(killMoves, toX, toY);
 		}
 	}
 	function addToAr(ar, toX, toY){
-		if(canDoMove(miniBoard, x, y, toX, toY)){
+		if(canDoMove(board, x, y, toX, toY)){
 			ar.push({x: toX, y: toY})
 		}
 	}
@@ -634,10 +633,10 @@ function getMoveset(board, i, x, y){
 	return moves;
 }
 function getMovesetFromName(piece){
-	return getMoveset(minifyBoard(), pieceNameToInt(piece.name), piece.row, piece.col);
+	return getMoveset(minifyUIBoard(), pieceNameToInt(piece.name), piece.row, piece.col);
 }
 
-function minifyBoard(){
+function minifyUIBoard(){
 	let r = [];
 
 	for (let row = 0; row < 8; row++) {
@@ -706,8 +705,9 @@ function promote(name){
 
 	finishedPromotion = true;
 
+	clickedPiece = null;
+
 	endTurn();
-	//mateCheck(minifyBoard(), (turnColor) == "black")
 }
 function checkPromotion(toX, toY){
 	if(UIboard[toX][toY].name == "pawn"){

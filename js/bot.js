@@ -1,9 +1,9 @@
-function botRandom(){
-    let allMoves = getAllMoves();
+function botRandom(color){
+    let allMoves = getAllMoves(color);
 
     // check for mate
     if(allMoves.length == 0){
-        mate(BOT_COLOR)
+        mate(color)
         return;
     }
 
@@ -27,7 +27,7 @@ function botMinOpponent(){
     // minimize oponent moves
 }
 
-function getAllMoves(){
+function getAllMoves(color){
     let r = [];
 
     for (let x = 0; x < 8; x++) {
@@ -42,7 +42,7 @@ function getAllMoves(){
             return;
         }
 
-        if(BOT_COLOR == "black"){
+        if(color == "black"){
             if(piece < 9){
                 return;
             }
