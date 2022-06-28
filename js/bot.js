@@ -79,13 +79,6 @@ function getAllMoves(color){
 
     return r;
 }
-function mergeMoveSets(m1, m2){
-    for (let i = 0; i < m2.length; i++) {
-        for (let i2 = 0; i2 < m2[i].length; i2++) {
-            m1[i].push(m2[i][i2])
-        }
-    }
-}
 function canDoMove(board, fromX, fromY, toX, toY){
     let newBoard = deepCopyBoard(board);
     let white = newBoard[fromX][fromY] < 9;
@@ -118,9 +111,11 @@ function executeBotMove(m){
             kill(m.x, m.y, m.toX, m.toY);
             break;
         case 3:
-            cstl(m.toX, m.toY);
+            castle(m.toX, m.toY);
             break;
     }
+
+    syncUI();
 }
 function getTypeFromPieceInt(piece){
     let i = piece;

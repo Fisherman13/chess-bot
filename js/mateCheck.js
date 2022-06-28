@@ -81,3 +81,7 @@ function highlightKing(color, isMate, state){
 		}
 	}
 }
+// TODO replace to code with somthing more dynamic, also use this to prevent the check highlight from being cleared
+function getkingLocation(color){
+
+}
