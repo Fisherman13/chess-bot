@@ -2,6 +2,7 @@
 // stats
 // rook & king have moved
 // fix bot promotion stuck issues
+// non player color ckeck problem
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -57,7 +58,7 @@ function checkBot(){
 
 	isBotWaiting = true;
 
-	board = minifyUIBoard();
+	//board = minifyUIBoard();
 
 	let move = botRandom(BOT_COLOR);
 
@@ -79,7 +80,7 @@ function checkBot(){
 	}, BOT_MOVE_DELAY);
 }
 function endTurn(){
-	board = minifyUIBoard();
+	// board = minifyUIBoard();
 
 	mateCheck(board, (turnColor == "black"));
 

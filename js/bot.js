@@ -112,10 +112,13 @@ function deepCopyBoard(board){
 function executeBotMove(m){
     switch (m.type) {
         case 0:
-            move(m.x, m.y, m.toX, m.toY)
+            move(m.x, m.y, m.toX, m.toY);
             break;
         case 1:
-            kill(m.x, m.y, m.toX, m.toY)
+            kill(m.x, m.y, m.toX, m.toY);
+            break;
+        case 3:
+            cstl(m.toX, m.toY);
             break;
     }
 }

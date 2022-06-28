@@ -36,21 +36,28 @@ function createInternalBoard(){
 		createPiece("black", "pawn",1 ,i);
 	}
 
-	// WHITE
-	for (let i = 0; i < 8; i++) {
-		createPiece("white", pieceOrder[i], 7 ,i);
-	}
-	for (let i = 0; i < 8; i++) {
-		createPiece("white", "pawn",6 ,i);
-	}
+	// // WHITE
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("white", pieceOrder[i], 7 ,i);
+	// }
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("white", "pawn",6 ,i);
+	// }
 
 	// createPiece("black", "king",0 ,4);
 	// createPiece("black", "bishop",1 ,4);
 	// createPiece("white", "pawn",2 ,2);
 	// createPiece("white", "rook",6 ,4);
 
+	createPiece("white", "rook",7 ,7);
+	createPiece("white", "king",7 ,4);
+
 	board = minifyUIBoard();
 }
+function syncUI(board){
+
+}
+
 function createPiece(color, name, row, col){
 	let boardEl = document.getElementById("board")
 
@@ -253,30 +260,19 @@ function movePiece(){
 	highlightMoves(UIboard[clickedPiece.row][clickedPiece.col], false);
 
 	move(clickedPiece.row, clickedPiece.col, toRow, toCol);
-}
-function move(fromX, fromY, toX, toY){
-	let from = UIboard[fromX][fromY]
-
-	// move image
-	from.element.setAttribute("x", (toY * 100) + 1);
-	from.element.setAttribute("y", (toX * 100) + 1);
-
-	UIboard[fromX][fromY] = {};
-
-	from.row = toX;
-	from.col = toY;
-
-	// update board
-	UIboard[toX][toY] = from;
 
 	toggleMoves = false;
-	clickedPiece = null
+	clickedPiece = null;
+
+	endTurn();
+}
+function move(fromX, fromY, toX, toY){
+	board[toX][toY] = board[fromX][fromY];
+	board[fromX][fromY] = 6;
 
 	if(checkPromotion(toX, toY)){	
 		return;
 	}
-
-	endTurn();
 }
 function killPiece(){
 	let id = this.id.split("-");	// TODO dont know how this can be done better
@@ -313,11 +309,16 @@ function kill(fromX, fromY, toX, toY){
 
 function castle(){
 	let rook = clickedPiece;
-	let isWhite = clickedPiece.row == 7;
-	let king = UIboard[(isWhite) ? 7 : 0][4];
-	let direction = clickedPiece.col == 7	// true is left
 
 	highlightMoves(UIboard[rook.row][rook.col], false);
+
+	cstl(rook.row, rook.col);
+}
+function cstl(rookX, rookY){
+	let rook = UIboard[rookX][rookY];
+	let isWhite = rookX == 7;
+	let king = UIboard[(isWhite) ? 7 : 0][4];
+	let direction = rookY == 7	// true is left
 
 	if(isWhite){
 		hasMoved[0] = true;
