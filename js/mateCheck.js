@@ -4,8 +4,6 @@ function mateCheck(board, white){
     let allChecks = getCheckedPieces(board, white);
 
     if(allChecks.length == 0){
-        highlightKing("white", false, false);
-        highlightKing("black", false, false);
         return;
     }
 
@@ -56,32 +54,25 @@ function getCheckedPieces(board, white){
 }
 
 function check(color){
-	highlightKing(color, false, true);
+	highlightKing(color, false);
 }
 function mate(color){
-	highlightKing(color, true, true);
+	highlightKing(color, true);
 }
-function removeKingHighlight(color){
-	highlightKing(color, true, false);
-}
-function highlightKing(color, isMate, state){
-	for (let i = 0; i < 8; i++) {
-		for (let i2 = 0; i2 < 8; i2++) {
-			let piece = UIboard[i][i2];
-			if(piece.color == color && piece.name == "king"){
-				let style = "";
+function highlightKing(color, isMate){
+    let loc = getkingLocation(color);
+    let style = `fill: ${(isMate) ? COLOR_MATE : COLOR_CHECK}`
 
-				if(state){
-					style = `fill: ${(isMate) ? COLOR_MATE : COLOR_CHECK}`
-				}
-
-				document.getElementById(`${piece.row}-${piece.col}`).style = style;
-				return;
-			}
-		}
-	}
+    document.getElementById(`${loc[0]}-${loc[1]}`).style = style;
 }
-// TODO replace to code with somthing more dynamic, also use this to prevent the check highlight from being cleared
 function getkingLocation(color){
+    let kingNumber = (color) ? 15 : 5;
 
+    for (let x = 0; x < 8; x++) {
+        for (let y = 0; y < 8; y++) {
+            if(board[x][y] == kingNumber){
+                return [x,y];
+            }
+        }
+    }
 }

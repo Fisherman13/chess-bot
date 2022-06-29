@@ -27,7 +27,7 @@ function makeMove(piece, x, y){
 
 				clickedPiece = null;
 				
-				removeHighlight();
+				removeHighlight(false);
 			}
 		}
 	}

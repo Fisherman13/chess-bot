@@ -21,7 +21,7 @@ function mousemove(event){
         return;
     }
 
-    removeHighlight();
+    removeHighlight(false);
 
     if(piece.name == null){
         return;
@@ -29,6 +29,9 @@ function mousemove(event){
     if(piece.color != PLAYER_COLOR){
         return;
     }
+	if(piece.color != turnColor){
+		return;
+	}
 
     highlightPiece(piece);
 
@@ -37,6 +40,11 @@ function mousemove(event){
 function mouseclick(event){
     let {x, y} = getCoordsFromEvent(event);
     let piece = UIboard[x][y];
+
+	// prevent clicking a piece before it is your turn
+	if(clickedPiece == null && piece != null && piece.color != turnColor){
+		return;
+	}
 
     if(isClicked()){
         if(piece == clickedPiece){
@@ -60,7 +68,7 @@ function mouseclick(event){
 }
 function mouseleave(){
     if(!isClicked()){
-        removeHighlight();
+        removeHighlight(false);
     }
 }
 function getCoordsFromEvent(event){
@@ -205,13 +213,26 @@ function highlightPiece(piece){
 	let el = document.getElementById(`${piece.row}-${piece.col}`);
 	el.style = `fill: ${COLOR_HOVER}`;
 }
-function removeHighlight(){
-    let x = document.querySelectorAll(".square");
+function removeHighlight(removeCheck){
+    let squares = document.querySelectorAll(".square");
+	let loc = getkingLocation(turnColor != "white");
 
-    for (let i = 0; i < x.length; i++) {
-        console.log
-        if(x[i].style != ""){
-            x[i].style = "";
+    for (let i = 0; i < squares.length; i++) {
+        if(squares[i].style.fill != ""){
+			if(!removeCheck){
+				let id = squares[i].id.split("-");
+				let x = parseInt(id[0]);
+				let y = parseInt(id[1]);
+
+				if(!(x == loc[0] && y == loc[1])){
+					squares[i].style.fill = "";
+				}
+				if(squares[i].style.fill == "rgb(209, 90, 209)"){
+					squares[i].style.fill = "";
+				}
+			}else{
+				squares[i].style.fill = "";
+			}
         }
     }
 }

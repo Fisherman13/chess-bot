@@ -78,7 +78,7 @@ function botCheck(){
 			return;
 		}
 
-		removeKingHighlight(BOT_COLOR);
+		removeHighlight(true);
 
 		executeBotMove(move)
 
