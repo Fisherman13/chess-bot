@@ -19,13 +19,6 @@ function botRandom(color){
         }
     }
 }
-function botgreedy(){
-    // kill if able
-    // higher values take priority
-}
-function botMinOpponent(){
-    // minimize oponent moves
-}
 
 function getAllMoves(color){
     let r = [];
@@ -52,7 +45,7 @@ function getAllMoves(color){
             }
         }
 
-        const moveSet = getMoveset(board, getTypeFromPieceInt(piece), x, y);
+        const moveSet = getMoveset(board, getTypeFromPieceInt(piece), x, y, true);
 
         // pawn being promoted
         if(moveSet.length == 0){
@@ -109,6 +102,9 @@ function executeBotMove(m){
             break;
         case 1:
             kill(m.x, m.y, m.toX, m.toY);
+            break;
+        case 2:
+            promote(m.x, m.y, m.toX, m.toY, 4);
             break;
         case 3:
             castle(m.toX, m.toY);

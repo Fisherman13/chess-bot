@@ -17,7 +17,7 @@ function makeMove(piece, x, y){
 					kill(clickedPiece.row, clickedPiece.col, x, y)
 				}
 				if(i == 2){
-					promote(moveSubSet[i2].x, moveSubSet[i2].y, 4);
+					promote(clickedPiece.row, clickedPiece.col, x, y, 0);
 				}
 				if(i == 3){
 					castle(clickedPiece.row, clickedPiece.col);
@@ -28,11 +28,11 @@ function makeMove(piece, x, y){
 				clickedPiece = null;
 				
 				removeHighlight(false);
+
+				endTurn();
 			}
 		}
 	}
-
-	endTurn();
 }
 
 function move(fromX, fromY, toX, toY){
@@ -48,14 +48,17 @@ function kill(fromX, fromY, toX, toY){
 
 	move(fromX, fromY, toX, toY);
 }
-function promote(x, y, to){
-	if(to != 0){
+function promote(fromX, fromY, toX, toY, to){
+	if(to == 0){
 		finishedPromotion = false;
-	}else{
-		board[x][y] = to;
+		moveList.push([[fromX, fromY],[toX, toY]])
+		return;
 	}
 
-	moveList.push([[x, y],[x, y]])
+	board[fromX][fromY] = 6;
+	board[toX][toY] = to;
+
+	moveList.push([[fromX, fromY],[toX, toY]])
 }
 function castle(rookX, rookY){
 	let direction = (rookY == 7)	// true is left
@@ -116,6 +119,22 @@ function pieceNameToInt(name){
 			return 4;
 		case "king":
 			return 5;
+	}
+}
+function pieceIntToName(i){
+	switch (i) {
+		case 0:
+			return "pawn";
+		case 1:
+			return "rook";
+		case 2:
+			return "knight";
+		case 3:
+			return "bishop";
+		case 4:
+			return "queen";
+		case 5:
+			return "king";
 	}
 }
 function updateCastleMoved(fromX, fromY){

@@ -1,4 +1,4 @@
-function getMoveset(board, i, x, y){
+function getMoveset(board, i, x, y, moveCheck){
 	let moves = [];
 	let openPositions = [];
 	let killMoves = [];
@@ -7,26 +7,24 @@ function getMoveset(board, i, x, y){
 	let checks = [];
 	let isWhite = board[x][y] < 9;
 
+	i = (i > 9) ? i -= 10 : i;
+
 	// pawn specific checks
 	if(i == 0){
-		// check if pawn can be promoted
-		let checkRow = (isWhite) ? 0 : 7;
-		if(x == checkRow){
-			if(turnColor == BOT_COLOR.color){
-				promote(4);
-			}
-			
-			return [];
-		}
-
 		let checkX = x + ((isWhite) ? -1 : 1);
-		if(board[(isWhite) ? x - 1 : x + 1][y] == 6){
-			addToAr(openPositions, checkX, y);
-			
-			if(checkX == 0){
-				addToAr(promotion, checkX, y);
+		let checkX2 = (isWhite) ? x - 1 : x + 1;
+
+		if(checkX2 > -1){
+			if(board[checkX2][y] == 6){
+				// Promotion is mandatory; the pawn cannot remain as a pawn.
+				if(checkX == ((isWhite) ? 0 : 7)){
+					addToAr(promotion, checkX, y);
+				}else{
+					addToAr(openPositions, checkX, y);
+				}
 			}
-		}		
+		}
+				
 
 		if(x == ((isWhite) ? 6 : 1)){
 			if(board[(isWhite) ? x - 2 : x + 2][y] == 6 && board[(isWhite) ? x - 1 : x + 1][y] == 6){
@@ -85,7 +83,7 @@ function getMoveset(board, i, x, y){
 		}
 		
 		// https://sakkpalota.hu/index.php/en/chess/rules#pawn
-		// todo: check for EN PASSANT
+		// TODO: check for EN PASSANT
 	}
 
 	// rook specific checks
@@ -222,9 +220,22 @@ function getMoveset(board, i, x, y){
 	if(i == 5){
 		// move pattern
 		let movePatern = [{x: 1, y: 0}, {x: 0, y: 1},{x: 1, y: 1}, {x: -1, y: 0},{x: 0, y: -1}, {x: -1, y: -1},{x: -1, y: 1}, {x: 1, y: -1}];
+		let otherKing = getKingLocation(!isWhite);
 
 		for (let i2 = 0; i2 < movePatern.length; i2++) {
-			checkPath(x + movePatern[i2].x, y + movePatern[i2].y)
+			if(!collidesWithKing(x + movePatern[i2].x, y + movePatern[i2].y, otherKing)){
+				checkPath(x + movePatern[i2].x, y + movePatern[i2].y);
+			}
+		}
+
+		function collidesWithKing(x, y, king){
+			for (let i2 = 0; i2 < movePatern.length; i2++) {
+				if(x == (king[0] + movePatern[i2].x) && y == (king[1] + movePatern[i2].y)){
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 
@@ -257,7 +268,11 @@ function getMoveset(board, i, x, y){
 		}
 	}
 	function addToAr(ar, toX, toY){
-		if(canDoMove(board, x, y, toX, toY)){
+		if(moveCheck){
+			if(canDoMove(board, x, y, toX, toY)){
+				ar.push({x: toX, y: toY})
+			}
+		}else{
 			ar.push({x: toX, y: toY})
 		}
 	}
@@ -271,5 +286,5 @@ function getMoveset(board, i, x, y){
 	return moves;
 }
 function getMovesetFromObject(piece){
-	return getMoveset(board, pieceNameToInt(piece.name), piece.row, piece.col);
+	return getMoveset(board, pieceNameToInt(piece.name), piece.row, piece.col, true);
 }

@@ -7,22 +7,36 @@
 <link rel="stylesheet" href="css/style.css"></link>
 <script src="js/main.js"></script>
 <script src="js/mateCheck.js"></script>
-<script src="js/bot.js"></script>
 
 <script src="js/board/board.js"></script>
 <script src="js/board/UI.js"></script>
 <script src="js/board/moveSet.js"></script>
 
+<script src="js/bot/helper.js"></script>
+<script src="js/bot/algorithm_greedy.js"></script>
+<script src="js/bot/algorithm_min.js"></script>
+
 <body>
+	<div id="winner" class="victory-overlay"></div>
+	
 	<h1 class="title">Chess Bot</h1>
 
-	<h3 class="error" id="error"></h3>
+	<div class="timer-container">
+		<div id="timeW" class="timer white">0</div>
+		<div id="timeB" class="timer black">0</div>
+	</div>
 
 	<div class="board-container">
 		<svg id="board" width="802" height="802">
 			<rect width="802" height="802" style="stroke-width: 2px; stroke: black"></rect>
 		</svg>
 	</div>
+
+	<h3 class="error" id="error"></h3>
+
+	<h3 class="legend-title">Moves</h3>
+	<div class="divider"></div>
+	<div class="moves" id="moves"></div>
 
 	<div id="legend" class="legend-container">
 		<h3 class="legend-title">Color legend</h3>
@@ -68,5 +82,7 @@
 		<div id="promotionContainer" class="promotion-container">
 		</div>
 	</div>
+
+	<div class="footer"><p>Made by: Tonio grijpma | version 1.0.0</p></div>
 </body>
 </html>

@@ -12,6 +12,9 @@ function createUIBoard(){
     boardEl.addEventListener("mousemove", mousemove);
     boardEl.addEventListener("mouseleave", mouseleave);
     boardEl.addEventListener("click", mouseclick);
+
+	boardEl.style.width = BOARD_WIDTH + "px";
+	boardEl.style.height = BOARD_WIDTH + "px";
 }
 function mousemove(event){
     let {x, y} = getCoordsFromEvent(event);
@@ -21,7 +24,9 @@ function mousemove(event){
         return;
     }
 
-    removeHighlight(false);
+	if(isHighlighting){
+		removeHighlight(false);
+	}
 
     if(piece.name == null){
         return;
@@ -49,6 +54,7 @@ function mouseclick(event){
     if(isClicked()){
         if(piece == clickedPiece){
             clickedPiece = null;
+			removeHighlight();
             return;
         }
 
@@ -72,8 +78,8 @@ function mouseleave(){
     }
 }
 function getCoordsFromEvent(event){
-    let x = Math.floor((event.offsetY - 3) / 100);
-    let y = Math.floor((event.offsetX - 3) / 100);
+    let x = Math.floor((event.offsetY - 3) / SQUARE_WIDTH);
+    let y = Math.floor((event.offsetX - 3) / SQUARE_WIDTH);
 
     x = (x < 0) ? 0 : x
     y = (y < 0) ? 0 : y
@@ -85,8 +91,10 @@ function createRect(row, col){
 	let square = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
 
 	square.setAttribute("class", "square");
-	square.setAttribute("x", (row * 100) + 1);
-	square.setAttribute("y", (col * 100) + 1);
+	square.setAttribute("x", (row * SQUARE_WIDTH) + 1);
+	square.setAttribute("y", (col * SQUARE_WIDTH) + 1);
+	square.setAttribute("width", SQUARE_WIDTH);
+	square.setAttribute("height", SQUARE_WIDTH);
 	square.setAttribute("fill", ((col + row) % 2) ? "lightgrey" : "white");
 	square.setAttribute("id", `${col}-${row}`);
 
@@ -116,13 +124,12 @@ function createInternalBoard(){
 	// 	createPiece("white", "pawn",6 ,i);
 	// }
 
-	createPiece("black", "king",0 ,4);
-	createPiece("black", "bishop",1 ,4);
-	createPiece("white", "pawn",2 ,2);
-	createPiece("white", "rook",6 ,4);
+	// createPiece("white", "pawn",1 ,1);
+	// createPiece("white", "pawn",1 ,2);
+	createPiece("white", "king",3 ,1);
 
-	createPiece("white", "rook",7 ,7);
-	createPiece("white", "king",7 ,4);
+	createPiece("black", "king",6 ,1);
+	createPiece("black", "queen",6 ,2);
 
 	board = minifyUIBoard();
 }
@@ -132,21 +139,30 @@ function syncUI(){
 		let from = UIboard[move[0][0]][move[0][1]];
         let to = UIboard[move[1][0]][move[1][1]];
 
-        if(to == from){
-            if(finishedPromotion){
-                continue;
-            }
+		logMove(move);
 
-            showOverlay()
+		if(!finishedPromotion){
+			showOverlay()
 
-            let i = setInterval(function(){
+            let interval = setInterval(function(){
                 if(promoteTo != ""){
-                    clearInterval(i);
+                    clearInterval(interval);
 
-                    board[to.row][to.col] = pieceNameToInt(promoteTo);
+					board[move[0][0]][move[0][1]] = 6;
+                    board[move[1][0]][move[1][1]] = pieceNameToInt(promoteTo) + ((from.color == "white") ? 0 : 10);
 
-                    to.name = promoteTo;
-                    to.element.setAttribute('href', `img/${promoteTo}_${(to.color == "white") ? "w" : "b"}.svg`);
+					// move image
+					from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
+					from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
+
+					from.row = move[1][0];
+					from.col = move[1][1];
+
+					UIboard[move[1][0]][move[1][1]] = from;
+					UIboard[move[0][0]][move[0][1]] = {};
+
+                    from.name = promoteTo;
+                    from.element.setAttribute('href', `img/${promoteTo}_${(from.color == "white") ? "w" : "b"}.svg`);
 
                     document.getElementById("promotionOverlay").style.display = "none";
 
@@ -154,26 +170,35 @@ function syncUI(){
 
                     promoteTo = "";
 
-                    endTurn();
+					mateCheck(board, (turnColor == "white"));
                 }
             }, 100)
+		}else{
+			// bot promotion check
+			if(from.name != null){
+				let pieceInt = board[move[1][0]][move[1][1]];
+				pieceInt = (from.color == "black") ? pieceInt - 10 : pieceInt;
 
-            return;
-        }
+				if(pieceNameToInt(from.name) != pieceInt){
+					from.name = pieceIntToName(pieceInt);
+					from.element.setAttribute('href', `img/${from.name}_${(from.color == "white") ? "w" : "b"}.svg`);
+				}
+			}
 
-        if(to.name != null){
-            to.kill();
-        }
-		
-		// move image
-		from.element.setAttribute("x", (move[1][1] * 100) + 1);
-		from.element.setAttribute("y", (move[1][0] * 100) + 1);
+			if(to.name != null && from.name != null){
+				to.kill();
+			}
+			
+			// move image
+			from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
+			from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
 
-		from.row = move[1][0];
-		from.col = move[1][1];
+			from.row = move[1][0];
+			from.col = move[1][1];
 
-		UIboard[move[1][0]][move[1][1]] = from;
-		UIboard[move[0][0]][move[0][1]] = {};
+			UIboard[move[1][0]][move[1][1]] = from;
+			UIboard[move[0][0]][move[0][1]] = {};
+		}
 	}
 }
 
@@ -192,8 +217,10 @@ function createPiece(color, name, row, col){
 
 	piece.setAttribute("class", "piece");
 
-	piece.setAttribute("x", (col * 100) + 1);
-	piece.setAttribute("y", (row * 100) + 1);
+	piece.setAttribute("x", (col * SQUARE_WIDTH) + 1);
+	piece.setAttribute("y", (row * SQUARE_WIDTH) + 1);
+	piece.setAttribute("height", SQUARE_WIDTH);
+	piece.setAttribute("width", SQUARE_WIDTH);
 
 	piece.setAttribute("href", `img/${name}_${(color == "white") ? "w" : "b"}.svg`);
 
@@ -210,12 +237,14 @@ function createPiece(color, name, row, col){
 	}
 }
 function highlightPiece(piece){
+	isHighlighting = true;
+
 	let el = document.getElementById(`${piece.row}-${piece.col}`);
 	el.style = `fill: ${COLOR_HOVER}`;
 }
 function removeHighlight(removeCheck){
     let squares = document.querySelectorAll(".square");
-	let loc = getkingLocation(turnColor != "white");
+	let loc = getKingLocation(turnColor == "white");
 
     for (let i = 0; i < squares.length; i++) {
         if(squares[i].style.fill != ""){
@@ -227,7 +256,7 @@ function removeHighlight(removeCheck){
 				if(!(x == loc[0] && y == loc[1])){
 					squares[i].style.fill = "";
 				}
-				if(squares[i].style.fill == "rgb(209, 90, 209)"){
+				if(squares[i].style.fill == "rgb(209, 90, 209)" || squares[i].style.fill == "rgb(251, 210, 135)"){
 					squares[i].style.fill = "";
 				}
 			}else{
@@ -235,11 +264,15 @@ function removeHighlight(removeCheck){
 			}
         }
     }
+
+	isHighlighting = false;
 }
 
 function highlightMoves(piece){
 	let moves = getMovesetFromObject(piece);
     let style = "";
+
+	isHighlighting = true;
     
 	for(let i = 0; i < moves.length; i++){
 		subArray = moves[i];
@@ -310,4 +343,28 @@ function createPromotionOverlay(){
 }
 function showOverlay(){
 	document.getElementById("promotionOverlay").style.display = "block";
+}
+function logMove(move){
+	// TODO: proper chess notation https://www.ichess.net/blog/chess-notation/
+	let from = BOARD_LAYOUT[move[0][0]][move[0][1]];
+	let to = BOARD_LAYOUT[move[1][0]][move[1][1]];
+
+	addElToMoves(turnColor, `${from}${to}`);
+}
+function winner(color){
+	addElToMoves(color, `Winner: ${color}`);
+
+	let el = document.getElementById("winner");
+	el.innerText = `Winner: ${color}`;
+	el.style.display = "block";
+
+	clearInterval(timeInterval);
+}
+function addElToMoves(color, text){
+	let el = document.createElement("div");
+	el.classList.add(color);
+	el.classList.add("move-item");
+	el.innerText = text;
+
+	document.getElementById("moves").appendChild(el);
 }
