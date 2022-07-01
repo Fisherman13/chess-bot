@@ -36,45 +36,38 @@ function getMoveset(board, i, x, y, moveCheck){
 		let checkY = y + ((isWhite) ? -1 : 1);
 		checkX = x + ((isWhite) ? -1 : 1);
 
-		if(checkX > -1 && checkX < 8 && checkY > -1 && checkY < 8){
+		pawnCheck();
+		
+		checkY = y + ((isWhite) ? 1 : -1);
+
+		pawnCheck();
+
+		function pawnCheck(){
+			if(checkX < 0 || checkX > 8 || checkY < 0 || checkY > 8){
+				return;
+			}
 			if(board[checkX][checkY] != 6){
 				if(isWhite){
 					if(board[checkX][checkY] > 9){
-						addToKillMoves(checkX, checkY);
+						if(checkX == ((isWhite) ? 0 : 7)){
+							addToAr(promotion, checkX, checkY);
+						}else{
+							addToKillMoves(checkX, checkY);
 
-						if(checkX == 0){
-                            addToAr(promotion, checkX, checkY);
+							if(checkX == 0){
+								addToAr(openPositions, checkX, checkY);
+							}
 						}
 					}
 				}else{
 					if(board[checkX][checkY] < 9){
-						addToKillMoves(checkX, checkY);
-
-						if(checkX == 7){
+						if(checkX == ((isWhite) ? 0 : 7)){
 							addToAr(promotion, checkX, checkY);
-						}
-					}
-				}
-			}
-	
-			checkY = y + ((isWhite) ? 1 : -1);
-
-			if(checkY > -1 && checkY < 8){
-				if(board[checkX][checkY] != 6){
-					if(isWhite){
-						if(board[checkX][checkY] > 9){
-							addToKillMoves(checkX, checkY);
-
-							if(checkX == 0){
-								addToAr(promotion, checkX, checkY);
-							}
-						}
-					}else{
-						if(board[checkX][checkY] < 9){
+						}else{
 							addToKillMoves(checkX, checkY);
 
 							if(checkX == 7){
-								addToAr(promotion, checkX, checkY);
+								addToAr(openPositions, checkX, checkY);
 							}
 						}
 					}

@@ -124,12 +124,15 @@ function createInternalBoard(){
 	// 	createPiece("white", "pawn",6 ,i);
 	// }
 
-	// createPiece("white", "pawn",1 ,1);
-	// createPiece("white", "pawn",1 ,2);
-	createPiece("white", "king",3 ,1);
+	createPiece("white", "pawn",1 ,0);
+	createPiece("white", "pawn",1 ,1);
+	createPiece("white", "pawn",3 ,4);
 
-	createPiece("black", "king",6 ,1);
-	createPiece("black", "queen",6 ,2);
+	createPiece("black", "pawn",0 ,0);
+	createPiece("black", "pawn",0 ,1);
+
+	createPiece("white", "king",5 ,5);
+	createPiece("black", "king",3 ,3);
 
 	board = minifyUIBoard();
 }
@@ -157,6 +160,10 @@ function syncUI(){
 
 					from.row = move[1][0];
 					from.col = move[1][1];
+
+					if(UIboard[move[1][0]][move[1][1]].name != null){
+						UIboard[move[1][0]][move[1][1]].kill();
+					}
 
 					UIboard[move[1][0]][move[1][1]] = from;
 					UIboard[move[0][0]][move[0][1]] = {};

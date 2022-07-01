@@ -2,7 +2,7 @@
 // find more bugs :)
 // better algorithm
 
-const PLAYER_COLOR = "black";
+const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
 const COLOR_HOVER = "#fbd287"
@@ -39,7 +39,7 @@ let	board = [];								// simplefied grid of only numbers
 let moveList = [];							// list af all moves made in a game
 let cycleCount = 0;							// used to iterate movelist
 
-let turnColor = "black"					 	// keep track of turns white | black
+let turnColor = "white"					 	// keep track of turns white | black
 let finishedPromotion = true;				// keep track of the promotion popup
 let promoteTo = "";							// what a piece will be promoted to, if empty the user can choose, bot automaticly selects the queen
 let isBotWaiting = false;					// makes sure the robot waits the full move delay
