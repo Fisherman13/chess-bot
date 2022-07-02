@@ -124,12 +124,13 @@ function createInternalBoard(){
 	// 	createPiece("white", "pawn",6 ,i);
 	// }
 
-	createPiece("white", "queen",1 ,0);
-	createPiece("white", "queen",1 ,1);
-	createPiece("white", "queen",3 ,4);
+	createPiece("white", "pawn",2 ,0);
+	createPiece("white", "pawn",2 ,1);
+
+	createPiece("white", "rook",2 ,5);
 	
 	createPiece("white", "king",5 ,5);
-	createPiece("black", "king",3 ,3);
+	createPiece("black", "king",0 ,0);
 
 	board = minifyUIBoard();
 }
@@ -321,6 +322,7 @@ function getStyle(i){
     }
 }
 function logError(msg){
+	console.log(`error: ${msg}`);
 	document.getElementById("error").innerText = msg;
 }
 function isClicked(){

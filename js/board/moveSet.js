@@ -50,7 +50,11 @@ function getMoveset(board, i, x, y, moveCheck){
 				if(isWhite){
 					if(board[checkX][checkY] > 9){
 						if(checkX == ((isWhite) ? 0 : 7)){
-							addToAr(promotion, checkX, checkY);
+							if(isKing(checkX, checkY)){
+								addToAr(checks, checkX, checkY);
+							}else{
+								addToAr(promotion, checkX, checkY);
+							}
 						}else{
 							addToKillMoves(checkX, checkY);
 
@@ -62,7 +66,11 @@ function getMoveset(board, i, x, y, moveCheck){
 				}else{
 					if(board[checkX][checkY] < 9){
 						if(checkX == ((isWhite) ? 0 : 7)){
-							addToAr(promotion, checkX, checkY);
+							if(isKing(checkX, checkY)){
+								addToAr(checks, checkX, checkY);
+							}else{
+								addToAr(promotion, checkX, checkY);
+							}
 						}else{
 							addToKillMoves(checkX, checkY);
 
@@ -254,7 +262,7 @@ function getMoveset(board, i, x, y, moveCheck){
 	}
 
 	function addToKillMoves(toX, toY){
-		if(board[toX][toY] == 5 || board[toX][toY] == 15){
+		if(isKing(toX, toY)){
 			addToAr(checks, toX, toY);
 		}else{
 			addToAr(killMoves, toX, toY);
@@ -268,6 +276,9 @@ function getMoveset(board, i, x, y, moveCheck){
 		}else{
 			ar.push({x: toX, y: toY})
 		}
+	}
+	function isKing(x, y){
+		return board[x][y] == 5 || board[x][y] == 15
 	}
 
 	moves.push(openPositions);

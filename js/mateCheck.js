@@ -3,8 +3,6 @@ let checkedSquare = null;
 function mateCheck(board, white){
     let allChecks = getCheckedPieces(board, white);
 
-    console.log(allChecks);
-
     if(allChecks.length == 0){
         return;
     }

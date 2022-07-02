@@ -3,7 +3,6 @@ function botRandom(color){
 
     // check for mate
     if(allMoves.length == 0){
-        mate(color)
         return;
     }
 
@@ -121,4 +120,17 @@ function getTypeFromPieceInt(piece){
     }
 
     return i;
+}
+
+function desyncCheck(board){
+    let visualBoard = minifyUIBoard();
+
+    for (let x = 0; x < 8; x++) {
+        for (let y = 0; y <8; y++) {
+            if(visualBoard[x][y] != board[x][y]){
+                logError(`UIboard desync on x:${x} y:${y}, attempting to resync`);
+                board = minifyUIBoard();
+            }
+        }
+    }
 }

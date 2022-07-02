@@ -76,7 +76,12 @@ function botCheck(){
 
 	isBotWaiting = true;
 
+	// change algorithm here
 	let move = botRandom(BOT_COLOR);
+
+	if(move == null){
+		mate(BOT_COLOR)
+	}
 
 	setTimeout(function() {
 		if(move == null){
@@ -97,6 +102,8 @@ function endTurn(){
 	syncUI(board);
 
 	mateCheck(board, (turnColor == "black"));
+
+	desyncCheck(board);
 
 	turnColor = (turnColor == "white") ? "black" : "white";
 }

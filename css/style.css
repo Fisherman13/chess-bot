@@ -44,7 +44,7 @@ body{
 /* error */
 .error{
 	text-align: center;
-    color: white;
+    color: #ff5b5b;
     font-size: 26px;
     margin-top: 0px;
     height: 20px;
