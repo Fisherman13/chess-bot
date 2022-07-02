@@ -108,29 +108,21 @@ function createInternalBoard(){
 		}
 	}
 
-	// // BLACK
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("black", pieceOrder[i], 0 ,i);
-	// }
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("black", "pawn",1 ,i);
-	// }
+	// BLACK
+	for (let i = 0; i < 8; i++) {
+		createPiece("black", pieceOrder[i], 0 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
+		createPiece("black", "pawn",1 ,i);
+	}
 
-	// // WHITE
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("white", pieceOrder[i], 7 ,i);
-	// }
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("white", "pawn",6 ,i);
-	// }
-
-	createPiece("white", "pawn",2 ,0);
-	createPiece("white", "pawn",2 ,1);
-
-	createPiece("white", "rook",2 ,5);
-	
-	createPiece("white", "king",5 ,5);
-	createPiece("black", "king",0 ,0);
+	// WHITE
+	for (let i = 0; i < 8; i++) {
+		createPiece("white", pieceOrder[i], 7 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
+		createPiece("white", "pawn",6 ,i);
+	}
 
 	board = minifyUIBoard();
 }

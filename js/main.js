@@ -77,7 +77,7 @@ function botCheck(){
 	isBotWaiting = true;
 
 	// change algorithm here
-	let move = botRandom(BOT_COLOR);
+	let move = botgreedy(BOT_COLOR);
 
 	if(move == null){
 		mate(BOT_COLOR)

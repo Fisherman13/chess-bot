@@ -24,7 +24,6 @@ function getMoveset(board, i, x, y, moveCheck){
 				}
 			}
 		}
-				
 
 		if(x == ((isWhite) ? 6 : 1)){
 			if(board[(isWhite) ? x - 2 : x + 2][y] == 6 && board[(isWhite) ? x - 1 : x + 1][y] == 6){

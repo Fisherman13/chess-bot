@@ -1,7 +1,6 @@
 function botRandom(color){
     let allMoves = getAllMoves(color);
 
-    // check for mate
     if(allMoves.length == 0){
         return;
     }
@@ -133,4 +132,11 @@ function desyncCheck(board){
             }
         }
     }
+}
+
+function pieceValue(x, y){
+    let piece = board[x][y];
+    piece = (piece > 9) ? piece -= 10 : piece;
+
+    return pieceWorth[piece];
 }
