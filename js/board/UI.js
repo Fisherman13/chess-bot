@@ -124,13 +124,10 @@ function createInternalBoard(){
 	// 	createPiece("white", "pawn",6 ,i);
 	// }
 
-	createPiece("white", "pawn",1 ,0);
-	createPiece("white", "pawn",1 ,1);
-	createPiece("white", "pawn",3 ,4);
-
-	createPiece("black", "pawn",0 ,0);
-	createPiece("black", "pawn",0 ,1);
-
+	createPiece("white", "queen",1 ,0);
+	createPiece("white", "queen",1 ,1);
+	createPiece("white", "queen",3 ,4);
+	
 	createPiece("white", "king",5 ,5);
 	createPiece("black", "king",3 ,3);
 

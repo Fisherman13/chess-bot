@@ -3,11 +3,19 @@ let checkedSquare = null;
 function mateCheck(board, white){
     let allChecks = getCheckedPieces(board, white);
 
+    console.log(allChecks);
+
     if(allChecks.length == 0){
         return;
     }
 
     check(white, false, true);
+
+    let colorString = (white) ? "white" : "black"
+    let allMoves = getAllMoves(colorString);
+    if(allMoves.length == 0){
+        mate(colorString);
+    }
 }
 
 function getCheckedPieces(board, white){
