@@ -11,16 +11,16 @@ function makeMove(piece, x, y){
 				//do stuff
 
 				if(i == 0){
-					move(clickedPiece.row, clickedPiece.col, x, y);
+					move(board, clickedPiece.row, clickedPiece.col, x, y, true);
 				}
 				if(i == 1){
-					kill(clickedPiece.row, clickedPiece.col, x, y)
+					kill(board, clickedPiece.row, clickedPiece.col, x, y, true)
 				}
 				if(i == 2){
-					promote(clickedPiece.row, clickedPiece.col, x, y, 0);
+					promote(board, clickedPiece.row, clickedPiece.col, x, y, 0, true);
 				}
 				if(i == 3){
-					castle(clickedPiece.row, clickedPiece.col);
+					castle(board, clickedPiece.row, clickedPiece.col, true);
 				}
 
 				syncUI();
@@ -35,43 +35,49 @@ function makeMove(piece, x, y){
 	}
 }
 
-function move(fromX, fromY, toX, toY){
+function move(board, fromX, fromY, toX, toY, save){
 	updateCastleMoved(fromX, fromY);
 
 	board[toX][toY] = board[fromX][fromY];
 	board[fromX][fromY] = 6; 
 
-	moveList.push([[fromX, fromY],[toX, toY]])
+	if(save){
+		moveList.push([[fromX, fromY],[toX, toY]])
+	}
 }
-function kill(fromX, fromY, toX, toY){
+function kill(board, fromX, fromY, toX, toY, save){
 	updateCastleMoved(fromX, fromY);
 
-	move(fromX, fromY, toX, toY);
+	move(board, fromX, fromY, toX, toY, save);
 }
-function promote(fromX, fromY, toX, toY, to){
+function promote(board, fromX, fromY, toX, toY, to, save){
 	if(to == 0){
 		finishedPromotion = false;
-		moveList.push([[fromX, fromY],[toX, toY]])
+		if(save){
+			moveList.push([[fromX, fromY],[toX, toY]])
+		}
 		return;
 	}
 
 	board[fromX][fromY] = 6;
 	board[toX][toY] = to;
 
-	moveList.push([[fromX, fromY],[toX, toY]])
+	if(save){
+		moveList.push([[fromX, fromY],[toX, toY]])
+	}
 }
-function castle(rookX, rookY){
+function castle(board, rookX, rookY, save){
 	let direction = (rookY == 7)	// true is left
 	let isWhite = rookX == 7;
 	let kingX = (isWhite) ? 7 : 0;
 	let kingY = 4;
 
 	if(direction){
-		move(rookX, rookY, rookX, rookY - 2);
-		move(kingX, kingY, kingX, kingY + 2);
+		move(board, rookX, rookY, rookX, rookY - 2, save);
+		move(board, kingX, kingY, kingX, kingY + 2, save);
 	}else{
-		move(rookX, rookY, rookX, rookY + 3);
-		move(kingX, kingY, kingX, kingY - 2);
+		move(board, rookX, rookY, rookX, rookY + 3, save);
+		move(board, kingX, kingY, kingX, kingY - 2, save);
 	}
 
 	if(isWhite){

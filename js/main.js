@@ -1,6 +1,8 @@
 // TODO:
 // find more bugs :)
 // better algorithm
+// captured pieces
+// stalemate
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -18,7 +20,7 @@ const BOARD_WIDTH = (SQUARE_WIDTH * 8) + 2;	// total with of the board
 const pieceWorth = [1, 5, 3, 3, 9, 0]		// capture worth of the pieces
 const BOT_CHECK_DELAY = 100;				// delay at which the program checks if it can make a move
 const BOT_MOVE_DELAY = 500;					// delay for the robot to animate it's move
-const TIME_UPDATE_DALAY = 100;				// interval in witch the timer will update
+const TIME_UPDATE_DALAY = 250;				// interval in witch the timer will update
 
 const BOARD_LAYOUT = [
 	["a8","b8","c8","d8","e8","f8","g8","h8"],
@@ -77,7 +79,7 @@ function botCheck(){
 	isBotWaiting = true;
 
 	// change algorithm here
-	let move = botgreedy(BOT_COLOR);
+	let move = botpoints(BOT_COLOR);
 
 	if(move == null){
 		mate(BOT_COLOR)
@@ -91,7 +93,9 @@ function botCheck(){
 
 		removeHighlight(true);
 
-		executeBotMove(move)
+		executeBotMove(board, move, true)
+
+		syncUI();
 
 		isBotWaiting = false;
 
@@ -127,7 +131,19 @@ function updateTimeEl(){
 	let sec = Math.floor((timeInMs / 1000) % 60);
 	let min = Math.floor((timeInMs / (60 * 1000)) % 60);
 
-	document.getElementById(`time${t}`).innerText = `${min}:${sec}:${ms}`;
+	document.getElementById(`time${t}`).innerText = `${formatSeconds(min)}:${formatSeconds(sec)}:${ formatMiliseconds(ms)}`;
+}
+function formatSeconds(t){
+	return (t < 10) ? "0" + t : t
+}
+function formatMiliseconds(t){
+	if(t < 10){
+		return "00" + t
+	}else if(t < 100){
+		return "0" + t
+	}
+
+	return t;
 }
 
 function colorLegend(){

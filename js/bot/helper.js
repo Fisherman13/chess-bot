@@ -1,5 +1,5 @@
 function botRandom(color){
-    let allMoves = getAllMoves(color);
+    let allMoves = getAllMoves(board, color);
 
     if(allMoves.length == 0){
         return;
@@ -18,7 +18,7 @@ function botRandom(color){
     }
 }
 
-function getAllMoves(color){
+function getAllMoves(board, color){
     let r = [];
 
     for (let x = 0; x < 8; x++) {
@@ -70,6 +70,34 @@ function getAllMoves(color){
 
     return r;
 }
+function splitAllMoveSet(moveset){
+    let r = [];
+
+    for (let i = 0; i < moveset.length; i++) {
+        const sub = moveset[i].moveSet;
+
+        for (let i2 = 0; i2 < sub.length; i2++) {
+            if(i2 == 4){
+                continue;
+            }
+
+            const moves = sub[i2];
+
+            for (let i3 = 0; i3 < moves.length; i3++) {
+                const move = moves[i3];
+                r.push({
+                    x: moveset[i].x, 
+                    y: moveset[i].y, 
+                    toX: move.x, 
+                    toY: move.y, 
+                    type: i2
+                })
+            }
+        }
+    }
+
+    return r;
+}
 function canDoMove(board, fromX, fromY, toX, toY){
     let newBoard = deepCopyBoard(board);
     let white = newBoard[fromX][fromY] < 9;
@@ -93,23 +121,21 @@ function deepCopyBoard(board){
 
     return r;
 }
-function executeBotMove(m){
+function executeBotMove(board, m, save){
     switch (m.type) {
         case 0:
-            move(m.x, m.y, m.toX, m.toY);
+            move(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 1:
-            kill(m.x, m.y, m.toX, m.toY);
+            kill(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 2:
-            promote(m.x, m.y, m.toX, m.toY, 4);
+            promote(board, m.x, m.y, m.toX, m.toY, 4, save);
             break;
         case 3:
-            castle(m.toX, m.toY);
+            castle(board, m.toX, m.toY, save);
             break;
     }
-
-    syncUI();
 }
 function getTypeFromPieceInt(piece){
     let i = piece;
@@ -134,9 +160,13 @@ function desyncCheck(board){
     }
 }
 
-function pieceValue(x, y){
+function pieceValue(board, x, y){
     let piece = board[x][y];
     piece = (piece > 9) ? piece -= 10 : piece;
 
     return pieceWorth[piece];
+}
+
+function invertColor(color){
+    return (color == "white") ? "black" : "white";
 }

@@ -350,10 +350,16 @@ function logMove(move){
 	addElToMoves(turnColor, `${from}${to}`);
 }
 function winner(color){
-	addElToMoves(color, `Winner: ${color}`);
-
 	let el = document.getElementById("winner");
-	el.innerText = `Winner: ${color}`;
+
+	if(color == "sdraw"){
+		addElToMoves(color, `stalemate draw`);
+		el.innerText = `Stalemate draw`;
+	}else{
+		addElToMoves(color, `Winner: ${color}`);
+		el.innerText = `Winner: ${color}`;
+	}
+	
 	el.style.display = "block";
 
 	clearInterval(timeInterval);

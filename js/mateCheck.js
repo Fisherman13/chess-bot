@@ -10,7 +10,7 @@ function mateCheck(board, white){
     check(white, false, true);
 
     let colorString = (white) ? "white" : "black"
-    let allMoves = getAllMoves(colorString);
+    let allMoves = getAllMoves(board, colorString);
     if(allMoves.length == 0){
         mate(colorString);
     }

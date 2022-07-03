@@ -1,5 +1,5 @@
 function botgreedy(color){
-    let allMoves = getAllMoves(color);
+    let allMoves = getAllMoves(board, color);
     let allKillMoves = getAllKillMoves(allMoves);
 
     if(allMoves.length == 0){
@@ -38,7 +38,7 @@ function getAllKillMoves(allMoves){
                 toX: killMove.x, 
                 toY: killMove.y, 
                 type: 1, 
-                value: pieceValue(killMove.x, killMove.y)
+                value: pieceValue(board, killMove.x, killMove.y)
             });
         }
     }
