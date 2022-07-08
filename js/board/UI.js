@@ -2,6 +2,14 @@ const pieceOrder = ["rook", "knight", "bishop", "queen", "king", "bishop", "knig
 
 function createUIBoard(){
 	let boardEl = document.getElementById("board");
+	let captureL = document.getElementById("capture-l");
+	let captureR = document.getElementById("capture-r");
+	let border = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+	border.setAttribute("width", BOARD_WIDTH);
+	border.setAttribute("height", BOARD_WIDTH);
+	border.style= "stroke-width: 2px; stroke: black";
+
+	boardEl.appendChild(border);
 
 	for (let col = 0; col < 8; col++) {
 		for (let row = 0; row < 8; row++) {
@@ -15,6 +23,11 @@ function createUIBoard(){
 
 	boardEl.style.width = BOARD_WIDTH + "px";
 	boardEl.style.height = BOARD_WIDTH + "px";
+
+	captureL.style.height = BOARD_WIDTH + "px";
+	captureR.style.height = BOARD_WIDTH + "px";
+	captureL.style.width = ((SQUARE_WIDTH / 1.5) * 2) + "px";
+	captureR.style.width = ((SQUARE_WIDTH / 1.5) * 2) + "px";
 }
 function mousemove(event){
     let {x, y} = getCoordsFromEvent(event);
@@ -230,7 +243,32 @@ function createPiece(color, name, row, col){
 	UIboard[row][col].element = piece;
 
 	function k(){
-		this.element.remove();
+		let captureL = document.getElementById("capture-l");
+		let captureR = document.getElementById("capture-r");
+		let x = 0;
+		let y = 0;
+		let width = SQUARE_WIDTH / 1.5;
+
+		this.element.style.width = `${width}px`;
+		this.element.style.height = `${width}px`;
+		this.element.style.cursor = "default";
+
+		if(this.color == "white"){
+			x = (captured[0].length % 2 == false) ? width : 0
+			y = width * Math.floor(captured[0].length / 2)
+			captured[0].push(pieceNameToInt(this.name))
+			captureL.appendChild(this.element);
+		}else{
+			x = (captured[1].length % 2 == false) ? width : 0
+			y = width * Math.floor(captured[1].length / 2)
+			captured[1].push(pieceNameToInt(this.name))
+			captureR.appendChild(this.element);
+		}
+		
+		this.element.setAttribute("x", x);
+		this.element.setAttribute("y", y);
+
+		// moveElement();
 	}
 }
 function highlightPiece(piece){

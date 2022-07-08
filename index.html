@@ -20,7 +20,11 @@
 <body>
 	<div id="winner" class="victory-overlay"></div>
 	
-	<h1 class="title">Chess Bot</h1>
+	<div class="title-container">
+		<h1 class="title">Chess Bot</h1>
+		<img class="chess-bot" src="img/chessBot.png">
+	</div>
+	
 
 	<div class="timer-container">
 		<div id="timeW" class="timer white">0</div>
@@ -28,9 +32,9 @@
 	</div>
 
 	<div class="board-container">
-		<svg id="board" width="802" height="802">
-			<rect width="802" height="802" style="stroke-width: 2px; stroke: black"></rect>
-		</svg>
+		<svg id="capture-l"></svg>
+		<svg id="board" width="802" height="802"></svg>
+		<svg id="capture-r"></svg>
 	</div>
 
 	<h3 class="error" id="error"></h3>

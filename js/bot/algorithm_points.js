@@ -4,9 +4,37 @@
 // bonus for minimizing ememy move possibilities
 // bonus for potential capture
 // bonus for getting out of ememy line of sight
+// bonus for a pawn with a straight line to promotion
+
+const treeDepth = 2;
 
 let enemyMoveCount = 0;
+
 function botpoints(color){
+    let tree = [0];
+    let allMoves = splitAllMoveSet(getAllMoves(board, color));
+    let i = 0;
+
+    if(allMoves.length == 0){
+        return;
+    }
+
+    tree.push(allMoves, createBranch(board, allMoves, color));
+
+    createTree(board, tree, i);
+
+    minifyTree(tree, 0);
+
+    for (let i = 0; i < treeDepth; i++) {
+        traverseTree(tree, null, treeDepth - i, 0, false);
+        traverseTree(tree, null, treeDepth - i, 0, true);
+    }
+
+    let move = allMoves[getMoveIndexFromTree(tree)];
+
+    return move;
+}
+function botPointsSingle(){
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
     enemyMoveCount = splitAllMoveSet(getAllMoves(board, invertColor(color))).length;
 
@@ -33,9 +61,103 @@ function botpoints(color){
 
     return allMoves[highestPointIndex];
 }
+function createBranch(board, allMoves, color){
+    let r = [];
 
+    for (let i = 0; i < allMoves.length; i++) {
+        let points = valueMove(board, allMoves[i], color);
+        r.push([points]);
+    }
 
-function valueMove(move, color){
+    return r;
+}
+function createTree(board, tree, i, callback){
+    if(i == treeDepth){
+        return;
+    }
+
+    for (let i2 = 0; i2 < tree[1].length; i2++) {
+        let newBoard = deepCopyBoard(board);
+
+        executeBotMove(newBoard, tree[1][i2], false);
+
+        let allMoves = splitAllMoveSet(getAllMoves(newBoard, (i % 0 === false) ? BOT_COLOR : PLAYER_COLOR));
+
+        tree[2][i2].push(allMoves, createBranch(newBoard, allMoves, (i % 2 === false) ? PLAYER_COLOR : BOT_COLOR));
+
+        createTree(newBoard, tree[2][i2], i + 1, callback)
+    }
+}
+function minifyTree(tree, it){
+    if(tree[2] == null){
+        return;
+    }
+
+    for (let i = 0; i < tree[2].length; i++) {
+        minifyTree(tree[2][i], it + 1)
+    }
+
+    tree.splice(1, 1);
+}
+
+function traverseTree(tree, node, target, it, mode){
+    if(target == 0){
+        return;
+    }
+
+    if(it == target){
+        if(mode){
+            node[0] = node[0] - node[1];
+            node.splice(1,1);
+        }else{
+            node[1] = highest(node[1])
+        }
+
+        return;
+    }
+
+    if(node == null){
+        node = tree;
+    }
+    for (let i = 0; i < node[1].length; i++) {
+        if(node == null){
+            traverseTree(tree, tree[1][i], target, it + 1, mode)
+        }else{
+            traverseTree(tree, node[1][i], target, it + 1, mode)
+        }
+    }
+}
+function highest(arr){
+    let r = 0;
+
+    for (let i = 0; i < arr.length; i++) {
+        if(arr[i][0] > r){
+            r = arr[i][0];
+        }
+    }
+
+    return r;
+}
+function getMoveIndexFromTree(tree){
+    let highestIndex = 0;
+    let highestValue = 0;
+
+    for (let i = 0; i < tree[1].length; i++) {
+        if(tree[1][i][0] == highestValue){  // if mvoes have the same value's pick a random one to avoid repetition
+            if(Math.random() < 0.5){
+                highestIndex = i;
+            }
+        }
+        if(tree[1][i][0] > highestValue){
+            highestValue = tree[1][i][0];
+            highestIndex = i;
+        }
+    }
+
+    return highestIndex;
+}
+
+function valueMove(board, move, color){
     let p = 0;
     let fromX = move.x;
     let fromY = move.y;

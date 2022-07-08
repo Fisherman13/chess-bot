@@ -1,7 +1,7 @@
 // TODO:
 // find more bugs :)
-// better algorithm
-// captured pieces
+// speed up points algorithm
+// fix timer counting for wrong color
 // stalemate
 
 const PLAYER_COLOR = "white";
@@ -40,6 +40,7 @@ let UIboard = [];							// grid with information for the UI
 let	board = [];								// simplefied grid of only numbers
 let moveList = [];							// list af all moves made in a game
 let cycleCount = 0;							// used to iterate movelist
+let captured = [[],[]];						// keep track of captured pieces
 
 let turnColor = "white"					 	// keep track of turns white | black
 let finishedPromotion = true;				// keep track of the promotion popup
@@ -78,14 +79,14 @@ function botCheck(){
 
 	isBotWaiting = true;
 
-	// change algorithm here
-	let move = botpoints(BOT_COLOR);
-
-	if(move == null){
-		mate(BOT_COLOR)
-	}
-
 	setTimeout(function() {
+		// change algorithm here
+		let move = botpoints(BOT_COLOR);
+
+		if(move == null){
+			mate(BOT_COLOR)
+		}
+
 		if(move == null){
 			// finished
 			return;
