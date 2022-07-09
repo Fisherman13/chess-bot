@@ -2,7 +2,7 @@
 // find more bugs :)
 // speed up points algorithm
 
-const PLAYER_COLOR = "black";
+const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
 const COLOR_HOVER = "#fbd287"

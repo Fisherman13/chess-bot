@@ -1,25 +1,44 @@
 let checkedSquare = null;
 
 function mateCheck(board, white){
+    let state = getState(board, white);
+    let colorString = (white) ? "white" : "black"
+
+    switch (state) {
+        case 0:
+            return
+        case 1:
+            check(white, false, true);
+            break;
+        case 2:
+            mate(colorString);
+            break;
+        case 3:
+            mate("sdraw");
+            break;
+    }
+}
+
+// 0 = nothing,  1 = check, 2 = mate, 3 statemate draw
+function getState(board, white){
     let allChecks = getCheckedPieces(board, white);
+    let r = 0;
 
     if(allChecks.length > 0){
-        check(white, false, true);
+        r = 1;
     }
 
     let colorString = (white) ? "white" : "black"
     let allMoves = getAllMoves(board, colorString);
     if(allMoves.length == 0){
         if(allChecks.length == 0){
-            mate("sdraw");
+            r = 3
         }else{
-            mate(colorString);
+            r = 2
         }
     }
-}
 
-function isChecked(){
-    
+    return r;
 }
 
 function getCheckedPieces(board, white){

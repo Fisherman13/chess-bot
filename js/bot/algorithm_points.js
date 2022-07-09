@@ -21,7 +21,7 @@ function botpoints(color){
 
     tree.push(allMoves, createBranch(board, allMoves, color));
 
-    createTree(board, tree, i);
+    createTree(board, tree, i, color);
 
     minifyTree(tree, 0);
 
@@ -71,7 +71,7 @@ function createBranch(board, allMoves, color){
 
     return r;
 }
-function createTree(board, tree, i, callback){
+function createTree(board, tree, i, callback, color){
     if(i == treeDepth){
         return;
     }
@@ -81,11 +81,11 @@ function createTree(board, tree, i, callback){
 
         executeBotMove(newBoard, tree[1][i2], false);
 
-        let allMoves = splitAllMoveSet(getAllMoves(newBoard, (i % 0 === false) ? BOT_COLOR : PLAYER_COLOR));
+        let allMoves = splitAllMoveSet(getAllMoves(newBoard, invertColor(color)));
 
-        tree[2][i2].push(allMoves, createBranch(newBoard, allMoves, (i % 2 === false) ? PLAYER_COLOR : BOT_COLOR));
+        tree[2][i2].push(allMoves, createBranch(newBoard, allMoves, invertColor(color)));
 
-        createTree(newBoard, tree[2][i2], i + 1, callback)
+        createTree(newBoard, tree[2][i2], i + 1, callback, invertColor(color))
     }
 }
 function minifyTree(tree, it){
@@ -187,16 +187,22 @@ function valueMove(board, move, color){
         p += (pieceValue(board, fromX, fromY)) / 4;
     }
 
-    // incentivise checking
-    const checks = getCheckedPieces(newBoard, (invertColor(color) == "white"))
-    for (let i = 0; i < checks.length; i++) {
-        if(checks[i].x == toX && checks[i].y == toY){
-            if(!canBeCaptured){
-                p += 5;
-            }
+    // incentivise checking & mate
+    let state = getState(newBoard, invertColor(color) == "white");
+    if(!canBeCaptured){
+        if(state == 1){
+            p += 5;
         }
     }
-    
+
+    if(state == 2){
+        p += 10000;
+    }
+
+    // preferebly no draw
+    if(state == 3){
+        p -= 10;
+    }
 
     let newEnemyMoveCount = splitAllMoveSet(getAllMoves(newBoard, invertColor(color))).length;
     if(newEnemyMoveCount < enemyMoveCount){
