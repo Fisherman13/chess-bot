@@ -2,6 +2,13 @@
 body{
 	margin: 0px;
 }
+
+@media (max-width:650px) { 
+    body{
+        display: inline-block;
+    }
+}
+
 *{
 	font-family: monospace;
 }
@@ -160,10 +167,9 @@ body{
 
 /* footer */
 .footer{
-    position: absolute;
-    bottom: 0px;
     padding-left: 5px;
     font-size: 13px;
+    margin-top: 40px;
 }
 
 /* overlay */

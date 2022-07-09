@@ -188,7 +188,7 @@ function valueMove(board, move, color){
     }
 
     // incentivise checking
-    const checks =  getCheckedPieces(newBoard, (invertColor(color) == "white"))
+    const checks = getCheckedPieces(newBoard, (invertColor(color) == "white"))
     for (let i = 0; i < checks.length; i++) {
         if(checks[i].x == toX && checks[i].y == toY){
             if(!canBeCaptured){

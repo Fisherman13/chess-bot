@@ -121,21 +121,27 @@ function createInternalBoard(){
 		}
 	}
 
-	// BLACK
-	for (let i = 0; i < 8; i++) {
-		createPiece("black", pieceOrder[i], 0 ,i);
-	}
-	for (let i = 0; i < 8; i++) {
-		createPiece("black", "pawn",1 ,i);
-	}
+	// // BLACK
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("black", pieceOrder[i], 0 ,i);
+	// }
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("black", "pawn",1 ,i);
+	// }
 
-	// WHITE
-	for (let i = 0; i < 8; i++) {
-		createPiece("white", pieceOrder[i], 7 ,i);
-	}
-	for (let i = 0; i < 8; i++) {
-		createPiece("white", "pawn",6 ,i);
-	}
+	// // WHITE
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("white", pieceOrder[i], 7 ,i);
+	// }
+	// for (let i = 0; i < 8; i++) {
+	// 	createPiece("white", "pawn",6 ,i);
+	// }
+
+	createPiece("white", "king",7 ,5);
+	createPiece("black", "king",0 ,5);
+	createPiece("black", "rook",1 ,4);
+	createPiece("black", "rook",0 ,1);
+	createPiece("black", "knight",1 ,6);
 
 	board = minifyUIBoard();
 }
@@ -394,8 +400,8 @@ function winner(color){
 		addElToMoves(color, `stalemate draw`);
 		el.innerText = `Stalemate draw`;
 	}else{
-		addElToMoves(color, `Winner: ${color}`);
-		el.innerText = `Winner: ${color}`;
+		addElToMoves(invertColor(color), `Winner: ${invertColor(color)}`);
+		el.innerText = `Winner: ${invertColor(color)}`;
 	}
 	
 	el.style.display = "block";

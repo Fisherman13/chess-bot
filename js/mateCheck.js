@@ -3,17 +3,23 @@ let checkedSquare = null;
 function mateCheck(board, white){
     let allChecks = getCheckedPieces(board, white);
 
-    if(allChecks.length == 0){
-        return;
+    if(allChecks.length > 0){
+        check(white, false, true);
     }
-
-    check(white, false, true);
 
     let colorString = (white) ? "white" : "black"
     let allMoves = getAllMoves(board, colorString);
     if(allMoves.length == 0){
-        mate(colorString);
+        if(allChecks.length == 0){
+            mate("sdraw");
+        }else{
+            mate(colorString);
+        }
     }
+}
+
+function isChecked(){
+    
 }
 
 function getCheckedPieces(board, white){
@@ -63,8 +69,11 @@ function check(color){
 	highlightKing(color, false);
 }
 function mate(color){
-	highlightKing((color == "white"), true);
-    winner((color == "white") ? "black" : "white")
+    if(color != "sdraw"){
+        highlightKing((color == "white"), true);
+    }
+	
+    winner(color)
 }
 function highlightKing(color, isMate){
     let loc = getKingLocation(color);

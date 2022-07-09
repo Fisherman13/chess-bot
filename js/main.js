@@ -1,10 +1,8 @@
 // TODO:
 // find more bugs :)
 // speed up points algorithm
-// fix timer counting for wrong color
-// stalemate
 
-const PLAYER_COLOR = "white";
+const PLAYER_COLOR = "black";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
 const COLOR_HOVER = "#fbd287"
@@ -47,6 +45,7 @@ let finishedPromotion = true;				// keep track of the promotion popup
 let promoteTo = "";							// what a piece will be promoted to, if empty the user can choose, bot automaticly selects the queen
 let isBotWaiting = false;					// makes sure the robot waits the full move delay
 let isHighlighting = false;					// this prevents highlights being cleared multiple times
+let startTime = new Date().getTime();
 let time = [0, 0];							// time in ms elapsed for each color
 let timeInterval = null;					// interval that updates the paytime
 
@@ -84,10 +83,6 @@ function botCheck(){
 		let move = botpoints(BOT_COLOR);
 
 		if(move == null){
-			mate(BOT_COLOR)
-		}
-
-		if(move == null){
 			// finished
 			return;
 		}
@@ -110,20 +105,21 @@ function endTurn(){
 
 	desyncCheck(board);
 
+	updateTime();
+
 	turnColor = (turnColor == "white") ? "black" : "white";
 }
 function startTimer(){
-	let startTime = new Date().getTime();
+	timeInterval = setInterval(updateTime, TIME_UPDATE_DALAY);
+}
+function updateTime(){
+	let curTime = new Date().getTime();
 
-	timeInterval = setInterval(function(){
-		let curTime = new Date().getTime();
+	time[(turnColor == "white") ? 0 : 1] += curTime - startTime;
+	
+	startTime = curTime;
 
-		time[(turnColor == "white") ? 0 : 1] += curTime - startTime;
-		
-		startTime = curTime;
-
-		updateTimeEl();
-	}, TIME_UPDATE_DALAY);
+	updateTimeEl();
 }
 function updateTimeEl(){
 	let t = (turnColor == "white") ? "W" : "B";
