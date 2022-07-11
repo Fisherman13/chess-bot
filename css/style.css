@@ -59,6 +59,12 @@ body{
     transform-box: fill-box;
     transform-origin: center;
 }
+.stats{
+    text-align: center;
+    color: black;
+    font-size: 16px;
+    margin: 10px 0px 10px 0px;
+}
 
 /* error */
 .error{
@@ -174,12 +180,6 @@ body{
 
 /* overlay */
 .victory-overlay{
-    margin: 0;
-    position: absolute;
-    top: 380px;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
     font-size: 30px;
     height: 50px;
     width: 250px;
@@ -188,8 +188,15 @@ body{
     line-height: 50px;
     border: 1px solid black;
     border-radius: 8px;
-    display: none;
     z-index: 10;
+    display: none;
+}
+.victory-overlay-container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    top: 380px;
+    position: fixed;
 }
 
 /* timer */

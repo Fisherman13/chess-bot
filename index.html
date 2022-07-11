@@ -18,7 +18,9 @@
 <script src="js/bot/algorithm_points.js"></script>
 
 <body>
-	<div id="winner" class="victory-overlay"></div>
+	<div class="victory-overlay-container">
+		<div id="winner" class="victory-overlay"></div>
+	</div>
 	
 	<div class="title-container">
 		<h1 class="title">Chess Bot</h1>
@@ -36,6 +38,8 @@
 		<svg id="board" width="802" height="802"></svg>
 		<svg id="capture-r"></svg>
 	</div>
+
+	<p class="stats" id="stats"></p>
 
 	<h3 class="error" id="error"></h3>
 
@@ -84,10 +88,9 @@
 	</div>
 
 	<div id="promotionOverlay" class="promotion-overlay">
-		<div id="promotionContainer" class="promotion-container">
-		</div>
+		<div id="promotionContainer" class="promotion-container"></div>
 	</div>
 
-	<div class="footer"><p>Made by: Tonio grijpma | version 1.0.0</p></div>
+	<div class="footer"><p>Made by: Tonio grijpma | version 1.0.1</p></div>
 </body>
 </html>

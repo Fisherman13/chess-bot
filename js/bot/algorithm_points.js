@@ -1,22 +1,29 @@
 // gives each possible move a value based on conditions
 // bonus for capturing = value of piece captured
 // penalty for getting into ememy line of sight
-// bonus for minimizing ememy move possibilities
 // bonus for potential capture
 // bonus for getting out of ememy line of sight
-// bonus for a pawn with a straight line to promotion
 
-const treeDepth = 2;
-
+let treeDepth = 2;
 let enemyMoveCount = 0;
+let movesChecked;
 
 function botpoints(color){
     let tree = [0];
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
     let i = 0;
+    let startTime = performance.now();
+
+    movesChecked = 0;
 
     if(allMoves.length == 0){
         return;
+    }
+
+    if(allMoves.length < 12){
+        treeDepth = 3;
+    }else{
+        treeDepth = 2;
     }
 
     tree.push(allMoves, createBranch(board, allMoves, color));
@@ -31,6 +38,10 @@ function botpoints(color){
     }
 
     let move = allMoves[getMoveIndexFromTree(tree)];
+    let endTime = performance.now();
+    let ms = endTime - startTime;
+
+    displayStats(movesChecked, ms);
 
     return move;
 }
@@ -66,6 +77,7 @@ function createBranch(board, allMoves, color){
 
     for (let i = 0; i < allMoves.length; i++) {
         let points = valueMove(board, allMoves[i], color);
+        movesChecked++;
         r.push([points]);
     }
 
@@ -143,7 +155,7 @@ function getMoveIndexFromTree(tree){
     let highestValue = 0;
 
     for (let i = 0; i < tree[1].length; i++) {
-        if(tree[1][i][0] == highestValue){  // if mvoes have the same value's pick a random one to avoid repetition
+        if(tree[1][i][0] == highestValue){  // if moves have the same value's pick a random one to avoid repetition
             if(Math.random() < 0.5){
                 highestIndex = i;
             }
@@ -164,8 +176,6 @@ function valueMove(board, move, color){
     let toX = move.toX;
     let toY = move.toY;
 
-    let canBeCaptured = false;
-
     if(move.type == 1){
         p += pieceValue(board, toX, toY);
     }
@@ -180,17 +190,21 @@ function valueMove(board, move, color){
     newBoard[toX][toY] = newBoard[fromX][fromY]
     newBoard[fromX][fromY] = 6;
 
-    canBeCaptured = isInLineOfSight(newBoard, toX, toY, invertColor(color));
+    let canBeCaptured = isInLineOfSight(newBoard, toX, toY, invertColor(color));
 
     // potential capture
     if(potentialCapture(newBoard, toX, toY)){
-        p += (pieceValue(board, fromX, fromY)) / 4;
+        p += (pieceValue(board, fromX, fromY)) / 1.5;
     }
 
     // incentivise checking & mate
     let state = getState(newBoard, invertColor(color) == "white");
     if(!canBeCaptured){
         if(state == 1){
+            p += 1;
+        }
+
+        if(move.type == 2){ // promotion
             p += 5;
         }
     }
@@ -204,13 +218,8 @@ function valueMove(board, move, color){
         p -= 10;
     }
 
-    let newEnemyMoveCount = splitAllMoveSet(getAllMoves(newBoard, invertColor(color))).length;
-    if(newEnemyMoveCount < enemyMoveCount){
-        p += ((newEnemyMoveCount - enemyMoveCount) / 5)
-    }
-
     if(canBeCaptured){
-        p -= (pieceValue(board, fromX, fromY) / 2);
+        p -= (pieceValue(board, fromX, fromY) * 1.2);
     }
 
     newBoard = null;

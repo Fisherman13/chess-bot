@@ -36,7 +36,9 @@ function makeMove(piece, x, y){
 }
 
 function move(board, fromX, fromY, toX, toY, save){
-	updateCastleMoved(fromX, fromY);
+	if(save){
+		updateCastleMoved(fromX, fromY);
+	}
 
 	board[toX][toY] = board[fromX][fromY];
 	board[fromX][fromY] = 6; 
@@ -46,7 +48,9 @@ function move(board, fromX, fromY, toX, toY, save){
 	}
 }
 function kill(board, fromX, fromY, toX, toY, save){
-	updateCastleMoved(fromX, fromY);
+	if(save){
+		updateCastleMoved(fromX, fromY);
+	}
 
 	move(board, fromX, fromY, toX, toY, save);
 }
@@ -80,12 +84,14 @@ function castle(board, rookX, rookY, save){
 		move(board, kingX, kingY, kingX, kingY - 2, save);
 	}
 
-	if(isWhite){
-		hasMoved[0] = true;
-		hasMoved[1] = true;
-	}else{
-		hasMoved[2] = true;
-		hasMoved[3] = true;
+	if(save){
+		if(isWhite){
+			hasMoved[0] = true;
+			hasMoved[1] = true;
+		}else{
+			hasMoved[2] = true;
+			hasMoved[3] = true;
+		}
 	}
 }
 

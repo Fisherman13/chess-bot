@@ -416,3 +416,6 @@ function addElToMoves(color, text){
 
 	document.getElementById("moves").appendChild(el);
 }
+function displayStats(movesChecked, ms){
+	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${Math.floor(ms)}ms`;
+}
