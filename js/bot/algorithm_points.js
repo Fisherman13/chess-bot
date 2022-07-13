@@ -5,7 +5,6 @@
 // bonus for getting out of ememy line of sight
 
 let treeDepth = 2;
-let enemyMoveCount = 0;
 let movesChecked;
 
 function botpoints(color){
@@ -47,7 +46,6 @@ function botpoints(color){
 }
 function botPointsSingle(){
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
-    enemyMoveCount = splitAllMoveSet(getAllMoves(board, invertColor(color))).length;
 
     if(allMoves.length == 0){
         return;
@@ -176,13 +174,10 @@ function valueMove(board, move, color){
     let toX = move.toX;
     let toY = move.toY;
 
+    p += getSTValue(toX, toY, getTypeFromPieceInt(board[fromX][fromY]), color, 8);
+
     if(move.type == 1){
         p += pieceValue(board, toX, toY);
-    }
-
-    // incentivise getting out of the way if the piece can be captured
-    if(isInLineOfSight(board, fromX, fromY, invertColor(color))){
-        p += pieceValue(board, fromX, fromY);
     }
 
     // can this move be captured
@@ -192,20 +187,39 @@ function valueMove(board, move, color){
 
     let canBeCaptured = isInLineOfSight(newBoard, toX, toY, invertColor(color));
 
-    // potential capture
-    if(potentialCapture(newBoard, toX, toY)){
-        p += (pieceValue(board, fromX, fromY)) / 1.5;
+    // temporarily change the color of a piece to check if it is defended
+    board[toX][toY] += ((board[toX][toY] > 9) ? -10 : 10);
+    let isDefended = isInLineOfSight(newBoard, toX, toY, invertColor(color));
+    board[toX][toY] += ((board[toX][toY] > 9) ? -10 : 10);
+
+    if(isDefended){
+        p =+ 0.5;
     }
+
+    // potential capture
+    // if(potentialCapture(newBoard, toX, toY)){
+    //     p += (pieceValue(board, fromX, fromY)) / 1.5;
+    // }
 
     // incentivise checking & mate
     let state = getState(newBoard, invertColor(color) == "white");
     if(!canBeCaptured){
         if(state == 1){
-            p += 1;
+            if(isDefended){
+                p += 3;
+            }else{
+                p += 0.5;
+            }
+            
         }
 
         if(move.type == 2){ // promotion
-            p += 5;
+            if(isDefended){
+                p += 5;
+            }else{
+                p += 15;
+            }
+            
         }
     }
 
@@ -219,7 +233,7 @@ function valueMove(board, move, color){
     }
 
     if(canBeCaptured){
-        p -= (pieceValue(board, fromX, fromY) * 1.2);
+        p -= pieceValue(board, fromX, fromY);
     }
 
     newBoard = null;
