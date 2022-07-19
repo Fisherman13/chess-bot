@@ -133,7 +133,7 @@ function executeBotMove(board, m, save){
             promote(board, m.x, m.y, m.toX, m.toY, 4, save);
             break;
         case 3:
-            castle(board, m.toX, m.toY, save);
+            castle(board, m.x, m.y, save);
             break;
     }
 }

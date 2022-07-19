@@ -1,7 +1,3 @@
-// TODO:
-// find more bugs :)
-// speed up points algorithm
-
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
@@ -79,6 +75,11 @@ function botCheck(){
 	isBotWaiting = true;
 
 	setTimeout(function() {
+		// check if endgame has begun
+		if(cycleCount > 20){
+			PST_B[5] = kie;
+		}
+
 		// change algorithm here
 		let move = botpoints(BOT_COLOR);
 

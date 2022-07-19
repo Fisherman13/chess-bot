@@ -137,11 +137,19 @@ function createInternalBoard(){
 		createPiece("white", "pawn",6 ,i);
 	}
 
-	// createPiece("white", "king",7 ,5);
-	// createPiece("black", "king",0 ,5);
-	// createPiece("black", "rook",1 ,4);
-	// createPiece("black", "rook",0 ,1);
-	// createPiece("black", "knight",1 ,6);
+	// castle config
+	// createPiece("white", "rook",7 ,7);
+	// createPiece("white", "king",7 ,4);
+	// createPiece("white", "rook",7 ,0);
+	// createPiece("black", "rook",0 ,0);
+	// createPiece("black", "king",0 ,4);
+	// createPiece("black", "rook",0 ,7);
+
+	// check config
+	// createPiece("black", "king",0 ,2);
+	// createPiece("white", "king",7 ,4);
+	// createPiece("white", "rook",7 ,6);
+	// createPiece("white", "rook",7 ,7);
 
 	board = minifyUIBoard();
 }
@@ -201,9 +209,12 @@ function syncUI(){
 				}
 			}
 
-			if(to.name != null && from.name != null){
-				to.kill();
+			if(to.color != from.color){
+				if(to.name != null && from.name != null){
+					to.kill();
+				}
 			}
+			
 			
 			// move image
 			from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
@@ -393,6 +404,13 @@ function logMove(move){
 
 	addElToMoves(turnColor, `${from}${to}`);
 }
+function logMoveDebug(board, move){
+	let from = BOARD_LAYOUT[move[0][0]][move[0][1]];
+	let to = BOARD_LAYOUT[move[1][0]][move[1][1]];
+	let color = (board[move[0][0]][move[0][1]] < 9) ? "white" : "black"
+
+	addElToMoves(color, `${from}${to}`);
+}
 function winner(color){
 	let el = document.getElementById("winner");
 
@@ -417,5 +435,5 @@ function addElToMoves(color, text){
 	document.getElementById("moves").appendChild(el);
 }
 function displayStats(movesChecked, ms){
-	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${Math.floor(ms)}ms`;
+	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${(ms / 1000).toFixed(2)}s (${Math.round(movesChecked / (Math.floor(ms) / 1000))}/sec)`;
 }

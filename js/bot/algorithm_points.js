@@ -4,7 +4,7 @@
 // bonus for potential capture
 // bonus for getting out of ememy line of sight
 
-let treeDepth = 2;
+let treeDepth = 3;
 let movesChecked;
 
 function botpoints(color){
@@ -19,12 +19,6 @@ function botpoints(color){
         return;
     }
 
-    if(allMoves.length < 12){
-        treeDepth = 3;
-    }else{
-        treeDepth = 2;
-    }
-
     tree.push(allMoves, createBranch(board, allMoves, color));
 
     createTree(board, tree, i, color);
@@ -35,6 +29,8 @@ function botpoints(color){
         traverseTree(tree, null, treeDepth - i, 0, false);
         traverseTree(tree, null, treeDepth - i, 0, true);
     }
+
+    console.log(tree);
 
     let move = allMoves[getMoveIndexFromTree(tree)];
     let endTime = performance.now();
@@ -168,72 +164,50 @@ function getMoveIndexFromTree(tree){
 }
 
 function valueMove(board, move, color){
+    // logMoveDebug(board, [[move.x, move.y], [move.toX, move.toY]]);
+
     let p = 0;
     let fromX = move.x;
     let fromY = move.y;
     let toX = move.toX;
     let toY = move.toY;
 
-    p += getSTValue(toX, toY, getTypeFromPieceInt(board[fromX][fromY]), color, 8);
-
-    if(move.type == 1){
-        p += pieceValue(board, toX, toY);
-    }
-
-    // can this move be captured
     let newBoard = deepCopyBoard(board);
     newBoard[toX][toY] = newBoard[fromX][fromY]
     newBoard[fromX][fromY] = 6;
 
-    let canBeCaptured = isInLineOfSight(newBoard, toX, toY, invertColor(color));
+    let state = getState(newBoard, invertColor(color));
 
-    // temporarily change the color of a piece to check if it is defended
-    board[toX][toY] += ((board[toX][toY] > 9) ? -10 : 10);
-    let isDefended = isInLineOfSight(newBoard, toX, toY, invertColor(color));
-    board[toX][toY] += ((board[toX][toY] > 9) ? -10 : 10);
+    p += getSTValue(toX, toY, getTypeFromPieceInt(board[fromX][fromY]), color, 8);
 
-    if(isDefended){
-        p =+ 0.5;
-    }
-
-    // potential capture
-    // if(potentialCapture(newBoard, toX, toY)){
-    //     p += (pieceValue(board, fromX, fromY)) / 1.5;
-    // }
-
-    // incentivise checking & mate
-    let state = getState(newBoard, invertColor(color) == "white");
-    if(!canBeCaptured){
-        if(state == 1){
-            if(isDefended){
-                p += 3;
-            }else{
-                p += 0.5;
-            }
-            
-        }
-
-        if(move.type == 2){ // promotion
-            if(isDefended){
-                p += 5;
-            }else{
-                p += 15;
-            }
-            
+    if(cycleCount < 10){
+        if(pieceValue(board, fromX, fromY) == 1){   // pawn
+            p *= 2;
         }
     }
-
-    if(state == 2){
-        p += 10000;
+   
+    switch (move.type) {
+        case 1:
+            p += pieceValue(board, toX, toY);
+            break;
+        case 2: // promotion
+            p += 15
+            break;
+        case 3: // castle
+            p += 5;
+            break;
     }
 
-    // preferebly no draw
-    if(state == 3){
-        p -= 10;
-    }
-
-    if(canBeCaptured){
-        p -= pieceValue(board, fromX, fromY);
+    switch (state) {
+        case 1:
+            p += 3
+            break;
+        case 2:
+            p += 10000;
+            break;
+        case 3:
+            p -= 10;
+            break;
     }
 
     newBoard = null;
@@ -242,6 +216,8 @@ function valueMove(board, move, color){
 }
 
 function isInLineOfSight(board, x, y, color){
+    let canBeCaptured = false;
+    let isDefended = false;
     let allMoves = getAllMoves(board, color);
 
     for (let i = 0; i < allMoves.length; i++) {
@@ -254,29 +230,34 @@ function isInLineOfSight(board, x, y, color){
                     const move = moves[i3];
                     
                     if(move.x == x && move.y == y){
-                        return true;
+                        canBeCaptured = true;
                     }
                 }
             }
         }
     }
-    
-    return false;
-}
 
-function potentialCapture(board, x, y){
-    const moveSet = getMoveset(board, board[x][y], x, y, false);
-    let v = 0;
+    // temporarily change the color of a piece to check if it is defended
+    board[x][y] += ((board[x][y] > 9) ? -10 : 10);
 
-    for (let i = 0; i < moveSet.length; i++) {
-        if(i == 1){
-            const moves = moveSet[i];
-            for (let i2 = 0; i2 < moves.length; i2++) {
-                const move = moves[i2];
-                v += pieceValue(board, move.x, move.y);
+    for (let i = 0; i < allMoves.length; i++) {
+        const moveSet = allMoves[i].moveSet;
+
+        for (let i2 = 0; i2 < moveSet.length; i2++) {
+            if(i2 == 1 || i2 == 0){
+                const moves = moveSet[i2];
+                for (let i3 = 0; i3 < moves.length; i3++) {
+                    const move = moves[i3];
+                    
+                    if(move.x == x && move.y == y){
+                        isDefended = true;
+                    }
+                }
             }
         }
     }
+
+    board[x][y] += ((board[x][y] > 9) ? -10 : 10);
     
-    return v;
+    return {canBeCaptured, isDefended};
 }
