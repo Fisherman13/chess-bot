@@ -164,7 +164,7 @@ function pieceValue(board, x, y){
     let piece = board[x][y];
     piece = (piece > 9) ? piece -= 10 : piece;
 
-    return pieceWorth[piece];
+    return PIECEWORTH[piece];
 }
 
 function invertColor(color){

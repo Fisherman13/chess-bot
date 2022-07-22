@@ -97,11 +97,11 @@ function getMoveset(board, i, x, y, moveCheck){
 			if(checkPath(x, y + i2)){
 				if(board[x][y + i2] == 5 || board[x][y + i2] == 15){
 					if(isWhite){
-						if(hasMoved[0] || hasMoved[1] || hasMoved[2]){
+						if(hasMoved[0] || hasMoved[1]){
 							break;
 						}
 					}else{
-						if(hasMoved[3] || hasMoved[4] || hasMoved[5]){
+						if(hasMoved[3] || hasMoved[4]){
 							break;
 						}
 					}
@@ -121,11 +121,11 @@ function getMoveset(board, i, x, y, moveCheck){
 			if(checkPath(x, y - i2)){
 				if(board[x][y - i2] == 5 || board[x][y - i2] == 15){
 					if(isWhite){
-						if(hasMoved[0] || hasMoved[1] || hasMoved[2]){
+						if(hasMoved[1] || hasMoved[2]){
 							break;
 						}
 					}else{
-						if(hasMoved[3] || hasMoved[4] || hasMoved[5]){
+						if(hasMoved[4] || hasMoved[5]){
 							break;
 						}
 					}
