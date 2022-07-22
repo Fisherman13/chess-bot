@@ -81,7 +81,7 @@ function botCheck(){
 		}
 
 		// change algorithm here
-		let move = botpoints(BOT_COLOR);
+		let move = botpoints(BOT_COLOR); //botPointsSingle
 
 		if(move == null){
 			// finished

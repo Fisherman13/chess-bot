@@ -25,6 +25,11 @@ body{
 .pointer{
 	cursor: pointer;
 }
+.coord-text{
+    fill: #767676;
+    font-size: 12px;
+    user-select: none;
+}
 
 /* general */
 .title{

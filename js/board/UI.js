@@ -33,6 +33,8 @@ function mousemove(event){
     let {x, y} = getCoordsFromEvent(event);
     let piece = UIboard[x][y];
 
+	highlightSquare(x, y);
+
     if(isClicked()){
         return;
     }
@@ -53,7 +55,7 @@ function mousemove(event){
 
     highlightPiece(piece);
 
-    highlightMoves(piece)
+    highlightMoves(piece);
 }
 function mouseclick(event){
     let {x, y} = getCoordsFromEvent(event);
@@ -86,6 +88,8 @@ function mouseclick(event){
     }
 }
 function mouseleave(){
+	removeSquareHighlight();
+
     if(!isClicked()){
         removeHighlight(false);
     }
@@ -436,4 +440,25 @@ function addElToMoves(color, text){
 }
 function displayStats(movesChecked, ms){
 	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${(ms / 1000).toFixed(2)}s (${Math.round(movesChecked / (Math.floor(ms) / 1000))}/sec)`;
+}
+function highlightSquare(x, y){
+	removeSquareHighlight();
+
+	let boardEl = document.getElementById("board");
+	let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+
+	text.setAttribute("class", "coord-text");
+	text.setAttribute("id", "coordText");
+	text.setAttribute("x", (y * SQUARE_WIDTH) + 2);
+	text.setAttribute("y", (x * SQUARE_WIDTH) + 12);
+	text.innerHTML = BOARD_LAYOUT[x][y];
+
+	boardEl.appendChild(text);
+}
+function removeSquareHighlight(){
+	let prevEl = document.getElementById("coordText");
+
+	if(prevEl != null){
+		prevEl.remove();
+	}
 }
