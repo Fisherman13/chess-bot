@@ -125,35 +125,35 @@ function createInternalBoard(){
 		}
 	}
 
-	// // BLACK
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("black", pieceOrder[i], 0 ,i);
-	// }
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("black", "pawn",1 ,i);
-	// }
+	// BLACK
+	for (let i = 0; i < 8; i++) {
+		createPiece("black", pieceOrder[i], 0 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
+		createPiece("black", "pawn",1 ,i);
+	}
 
-	// // WHITE
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("white", pieceOrder[i], 7 ,i);
-	// }
-	// for (let i = 0; i < 8; i++) {
-	// 	createPiece("white", "pawn",6 ,i);
-	// }
+	// WHITE
+	for (let i = 0; i < 8; i++) {
+		createPiece("white", pieceOrder[i], 7 ,i);
+	}
+	for (let i = 0; i < 8; i++) {
+		createPiece("white", "pawn",6 ,i);
+	}
 
-	// castle config
-	createPiece("white", "rook",7 ,7);
-	createPiece("white", "king",7 ,4);
-	createPiece("white", "rook",7 ,0);
+	// castle test config
+	// createPiece("white", "rook",7 ,7);
+	// createPiece("white", "king",7 ,4);
+	// createPiece("white", "rook",7 ,0);
 	// createPiece("black", "rook",0 ,0);
-	createPiece("white", "pawn",6 ,0);
-	createPiece("white", "pawn",6 ,7);
-	createPiece("black", "king",0 ,4);
+	// createPiece("white", "pawn",6 ,0);
+	// createPiece("white", "pawn",6 ,7);
+	// createPiece("black", "king",0 ,4);
 	// createPiece("black", "rook",0 ,7);
-	createPiece("black", "pawn",1 ,0);
-	createPiece("black", "pawn",1 ,7);
+	// createPiece("black", "pawn",1 ,0);
+	// createPiece("black", "pawn",1 ,7);
 
-	// check config
+	// check & mate test config
 	// createPiece("black", "king",0 ,2);
 	// createPiece("white", "king",7 ,4);
 	// createPiece("white", "rook",7 ,6);
