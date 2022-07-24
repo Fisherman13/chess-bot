@@ -118,6 +118,7 @@ function createRect(row, col){
 	return square;
 }
 function createInternalBoard(){
+	UIboard = [];
 	for (let row = 0; row < 8; row++) {
 		UIboard.push([]);
 		for (let col = 0; col < 8; col++) {
@@ -154,86 +155,97 @@ function createInternalBoard(){
 	// createPiece("black", "pawn",1 ,7);
 
 	// check & mate test config
-	// createPiece("black", "king",0 ,2);
+	// createPiece("black", "king",0 ,4);
+	// createPiece("black", "rook",0 ,0);
+	// createPiece("black", "rook",0 ,7);
 	// createPiece("white", "king",7 ,4);
-	// createPiece("white", "rook",7 ,6);
+	// createPiece("white", "rook",7 ,0);
 	// createPiece("white", "rook",7 ,7);
+
+	// promotion test config
+	// createPiece("black", "king",0 ,4);
+	// createPiece("white", "king",7 ,4);
+	// createPiece("black", "pawn",5 ,0);
+	// createPiece("white", "pawn",2 ,7);
 
 	board = minifyUIBoard();
 }
 function syncUI(){
 	for (let i = 0; cycleCount < moveList.length; cycleCount++) {
 		let move = moveList[cycleCount];
-		let from = UIboard[move[0][0]][move[0][1]];
-        let to = UIboard[move[1][0]][move[1][1]];
+		movePiece(move);
+	}
+}
+function movePiece(move){
+	let from = UIboard[move[0][0]][move[0][1]];
+	let to = UIboard[move[1][0]][move[1][1]];
 
-		logMove(move);
+	logMove(move);
 
-		if(!finishedPromotion){
-			showOverlay()
+	if(!finishedPromotion){
+		showOverlay()
 
-            let interval = setInterval(function(){
-                if(promoteTo != ""){
-                    clearInterval(interval);
+		let interval = setInterval(function(){
+			if(promoteTo != ""){
+				clearInterval(interval);
 
-					board[move[0][0]][move[0][1]] = 6;
-                    board[move[1][0]][move[1][1]] = pieceNameToInt(promoteTo) + ((from.color == "white") ? 0 : 10);
+				board[move[0][0]][move[0][1]] = 6;
+				board[move[1][0]][move[1][1]] = pieceNameToInt(promoteTo) + ((from.color == "white") ? 0 : 10);
 
-					// move image
-					from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
-					from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
+				// move image
+				from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
+				from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
 
-					from.row = move[1][0];
-					from.col = move[1][1];
+				from.row = move[1][0];
+				from.col = move[1][1];
 
-					if(UIboard[move[1][0]][move[1][1]].name != null){
-						UIboard[move[1][0]][move[1][1]].kill();
-					}
-
-					UIboard[move[1][0]][move[1][1]] = from;
-					UIboard[move[0][0]][move[0][1]] = {};
-
-                    from.name = promoteTo;
-                    from.element.setAttribute('href', `img/${promoteTo}_${(from.color == "white") ? "w" : "b"}.svg`);
-
-                    document.getElementById("promotionOverlay").style.display = "none";
-
-                    finishedPromotion = true;
-
-                    promoteTo = "";
-
-					mateCheck(board, (turnColor == "white"));
-                }
-            }, 100)
-		}else{
-			// bot promotion check
-			if(from.name != null){
-				let pieceInt = board[move[1][0]][move[1][1]];
-				pieceInt = (from.color == "black") ? pieceInt - 10 : pieceInt;
-
-				if(pieceNameToInt(from.name) != pieceInt){
-					from.name = pieceIntToName(pieceInt);
-					from.element.setAttribute('href', `img/${from.name}_${(from.color == "white") ? "w" : "b"}.svg`);
+				if(UIboard[move[1][0]][move[1][1]].name != null){
+					UIboard[move[1][0]][move[1][1]].kill();
 				}
+
+				UIboard[move[1][0]][move[1][1]] = from;
+				UIboard[move[0][0]][move[0][1]] = {};
+
+				from.name = promoteTo;
+				from.element.setAttribute('href', `img/${promoteTo}_${(from.color == "white") ? "w" : "b"}.svg`);
+
+				document.getElementById("promotionOverlay").style.display = "none";
+
+				finishedPromotion = true;
+
+				promoteTo = "";
+
+				mateCheck(board, (turnColor == "white"));
 			}
+		}, 100)
+	}else{
+		// bot promotion check
+		if(from.name != null){
+			let pieceInt = board[move[1][0]][move[1][1]];
+			pieceInt = (from.color == "black") ? pieceInt - 10 : pieceInt;
 
-			if(to.color != from.color){
-				if(to.name != null && from.name != null){
-					to.kill();
-				}
+			if(pieceNameToInt(from.name) != pieceInt){
+				from.name = pieceIntToName(pieceInt);
+				from.element.setAttribute('href', `img/${from.name}_${(from.color == "white") ? "w" : "b"}.svg`);
 			}
-			
-			
-			// move image
-			from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
-			from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
-
-			from.row = move[1][0];
-			from.col = move[1][1];
-
-			UIboard[move[1][0]][move[1][1]] = from;
-			UIboard[move[0][0]][move[0][1]] = {};
 		}
+
+		if(to.color != from.color){
+			if(to.name != null && from.name != null){
+				to.kill();
+			}
+		}
+		
+		
+		// move image
+		from.element.setAttribute("x", (move[1][1] * SQUARE_WIDTH) + 1);
+		from.element.setAttribute("y", (move[1][0] * SQUARE_WIDTH) + 1);
+
+		from.row = move[1][0];
+		from.col = move[1][1];
+
+		UIboard[move[1][0]][move[1][1]] = from;
+		UIboard[move[0][0]][move[0][1]] = {};
 	}
 }
 
@@ -300,7 +312,10 @@ function highlightPiece(piece){
 	isHighlighting = true;
 
 	let el = document.getElementById(`${piece.row}-${piece.col}`);
-	el.style = `fill: ${COLOR_HOVER}`;
+
+	if(!isCheckHighlight(el)){
+		el.style = `fill: ${COLOR_HOVER}`;
+	}
 }
 function removeHighlight(removeCheck){
     let squares = document.querySelectorAll(".square");
@@ -314,9 +329,11 @@ function removeHighlight(removeCheck){
 				let y = parseInt(id[1]);
 
 				if(!(x == loc[0] && y == loc[1])){
-					squares[i].style.fill = "";
+					if(!isCheckHighlight(squares[i])){
+						squares[i].style.fill = "";
+					}
 				}
-				if(squares[i].style.fill == "rgb(209, 90, 209)" || squares[i].style.fill == "rgb(251, 210, 135)"){
+				if(!isCheckHighlight(squares[i])){
 					squares[i].style.fill = "";
 				}
 			}else{
@@ -326,6 +343,10 @@ function removeHighlight(removeCheck){
     }
 
 	isHighlighting = false;
+}
+function isCheckHighlight(square){
+	let r = (square.style.fill == COLOR_MATE || square.style.fill == COLOR_CHECK)
+	return r;
 }
 
 function highlightMoves(piece){
@@ -425,14 +446,19 @@ function winner(color){
 	if(color == "sdraw"){
 		addElToMoves(color, `stalemate draw`);
 		el.innerText = `Stalemate draw`;
+	}else if(color == "resign"){
+		addElToMoves(BOT_COLOR, `Winner by resign: ${BOT_COLOR}`);
+		el.innerText = `Winner by resign: ${BOT_COLOR}`;
 	}else{
-		addElToMoves(invertColor(color), `Winner: ${invertColor(color)}`);
-		el.innerText = `Winner: ${invertColor(color)}`;
+		addElToMoves(invertColor(color), `Winner: ${color}`);
+		el.innerText = `Winner: ${color}`;
 	}
 	
 	el.style.display = "block";
 
 	clearInterval(timeInterval);
+
+	toggleReplay(true);
 }
 function addElToMoves(color, text){
 	let el = document.createElement("div");
@@ -442,8 +468,15 @@ function addElToMoves(color, text){
 
 	document.getElementById("moves").appendChild(el);
 }
+function clearMoves(){
+	document.getElementById("moves").innerHTML = "";
+}
 function displayStats(movesChecked, ms){
 	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${(ms / 1000).toFixed(2)}s (${Math.round(movesChecked / (Math.floor(ms) / 1000))}/sec)`;
+}
+function clearStats(){
+	document.getElementById("stats").innerText = "";
+
 }
 function highlightSquare(x, y){
 	removeSquareHighlight();
@@ -451,7 +484,11 @@ function highlightSquare(x, y){
 	let boardEl = document.getElementById("board");
 	let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
-	text.setAttribute("class", "coord-text");
+	if(PLAYER_COLOR == "black"){
+		text.classList.add("flip-piece");
+	}
+
+	text.classList.add("coord-text");
 	text.setAttribute("id", "coordText");
 	text.setAttribute("x", (y * SQUARE_WIDTH) + 2);
 	text.setAttribute("y", (x * SQUARE_WIDTH) + 12);
@@ -464,5 +501,23 @@ function removeSquareHighlight(){
 
 	if(prevEl != null){
 		prevEl.remove();
+	}
+}
+function toggleReplay(v){
+	document.getElementById("replayContainer").style.display = (v) ? "flex" : "none";
+}
+function toggleResign(v){
+	document.getElementById("resignContainer").style.display = (v) ? "flex" : "none";
+}
+function clearCaptures(){
+	const ids = ["capture-l","capture-r"];
+
+	for (let i = 0; i < ids.length; i++) {
+		const id = ids[i]
+		let els = document.getElementById(id).children;
+
+		for (let i2 = 0; i2 < els.length; i2++) {
+			els[i2].remove();
+		}
 	}
 }

@@ -50,7 +50,7 @@ function createBranch(board, allMoves, color){
 
     return r;
 }
-function createTree(board, tree, i, callback, color){
+function createTree(board, tree, i, color){
     if(i == treeDepth){
         return;
     }
@@ -64,7 +64,8 @@ function createTree(board, tree, i, callback, color){
 
         tree[2][i2].push(allMoves, createBranch(newBoard, allMoves, invertColor(color)));
 
-        createTree(newBoard, tree[2][i2], i + 1, callback, invertColor(color))
+        // TODO: split up to not freeze UI
+        createTree(newBoard, tree[2][i2], i + 1, invertColor(color))
     }
 }
 function minifyTree(tree, it){
@@ -242,7 +243,7 @@ function calcEarlygamePoints(type, p){
 
 function botPointsSingle(color){
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
-    let temp = [];
+    let pointOverview = [];
 
     if(allMoves.length == 0){
         return;
@@ -254,7 +255,7 @@ function botPointsSingle(color){
     for (let i = 0; i < allMoves.length; i++) {
         let points = valueMove(board, allMoves[i], color);
 
-        temp.push(points, allMoves[i]);
+        pointOverview.push(points, allMoves[i]);
 
         if(points > highestPoints){
             highestPoints = points;
@@ -267,7 +268,7 @@ function botPointsSingle(color){
         return botRandom(color);
     }
 
-    console.log(temp);
+    console.log(pointOverview);
 
     return allMoves[highestPointIndex];
 }

@@ -1,4 +1,4 @@
-const VERSION = "1.0.8"
+const VERSION = "1.0.9"
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -7,8 +7,8 @@ const COLOR_HOVER = "#fbd287"
 const COLOR_KILL = "#f36969";
 const COLOR_CASTLE = "rgb(209 90 209)";
 const COLOR_PROMOTION = "#952495";
-const COLOR_CHECK = "#6e6eff"
-const COLOR_MATE = "#2525ff"
+const COLOR_CHECK = "rgb(110, 110, 255)"
+const COLOR_MATE = "rgb(37, 37, 255)"
 
 const SQUARE_WIDTH = 60;					// square size of the board in px
 const BOARD_WIDTH = (SQUARE_WIDTH * 8) + 2;	// total with of the board
@@ -17,6 +17,7 @@ const PIECEWORTH = [1, 5, 3, 3, 9, 0]		// capture worth of the pieces
 const BOT_CHECK_DELAY = 100;				// delay at which the program checks if it can make a move
 const BOT_MOVE_DELAY = 500;					// delay for the robot to animate it's move
 const TIME_UPDATE_DALAY = 250;				// interval in witch the timer will update
+const REPLAY_SPEED = 500;
 
 const BOARD_LAYOUT = [
 	["a8","b8","c8","d8","e8","f8","g8","h8"],
@@ -167,4 +168,13 @@ function flipBoard(){
 }
 function setVersion(){
 	document.getElementById("footer").innerText += (` (js: ${VERSION})`)
+}
+function resign(){
+	winner("resign");
+	highlightKing((BOT_COLOR == "black"), true);
+	toggleResign(false);
+
+	if(!moveList.includes("resign")){
+		moveList.push("resign")
+	}
 }

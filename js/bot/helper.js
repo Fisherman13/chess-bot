@@ -130,7 +130,8 @@ function executeBotMove(board, m, save){
             kill(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 2:
-            promote(board, m.x, m.y, m.toX, m.toY, 4, save);
+            let promoteTo = (BOT_COLOR == "black") ? 14 : 4
+            promote(board, m.x, m.y, m.toX, m.toY, promoteTo, save);
             break;
         case 3:
             castle(board, m.x, m.y, save);

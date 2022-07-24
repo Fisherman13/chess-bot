@@ -27,7 +27,7 @@ function makeMove(piece, x, y){
 
 				clickedPiece = null;
 				
-				removeHighlight(false);
+				removeHighlight(true);
 
 				endTurn();
 			}

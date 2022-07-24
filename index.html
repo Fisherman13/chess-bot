@@ -11,6 +11,7 @@
 <script src="js/board/board.js"></script>
 <script src="js/board/UI.js"></script>
 <script src="js/board/moveSet.js"></script>
+<script src="js/board/replay.js"></script>
 
 <script src="js/bot/helper.js"></script>
 <script src="js/bot/PieceSquareTable.js"></script>
@@ -42,6 +43,14 @@
 
 	<p class="stats" id="stats"></p>
 
+	<div class="resign-container" id="resignContainer">
+		<button onclick="resign()" class="button" id="resign">Resign</button>
+	</div>
+
+	<div class="replay-container" id="replayContainer">
+		<button onclick="replayMatch()" class="replay button" id="replay">Replay match</button>
+	</div>
+
 	<h3 class="error" id="error"></h3>
 
 	<h3 class="legend-title">Moves</h3>
@@ -59,7 +68,7 @@
 				<div id="colorMove" class="legend-color"></div>
 			</div>
 			<div class="legend-item">
-				<p class="legend-text">Kill</p>
+				<p class="legend-text">Capture</p>
 				<p class="legend-text-divider">:</p>
 				<div id="colorKill" class="legend-color"></div>
 			</div>
@@ -92,6 +101,6 @@
 		<div id="promotionContainer" class="promotion-container"></div>
 	</div>
 
-	<div class="footer"><p id="footer">Made by: Tonio grijpma | version 1.0.8</p></div>
+	<div class="footer"><p id="footer">Made by: Tonio grijpma | version 1.0.9</p></div>
 </body>
 </html>

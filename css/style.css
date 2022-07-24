@@ -187,7 +187,6 @@ body{
 .victory-overlay{
     font-size: 30px;
     height: 50px;
-    width: 250px;
     background-color: #ffffffb8;
     text-align: center;
     line-height: 50px;
@@ -195,6 +194,7 @@ body{
     border-radius: 8px;
     z-index: 10;
     display: none;
+    padding: 0px 15px 0px 15px;
 }
 .victory-overlay-container{
     display: flex;
@@ -215,4 +215,31 @@ body{
     width: 200px;
     padding: 0px 10px 0px 10px;
     text-align: center;
+}
+
+/* replay */
+.replay-container{
+    justify-content: center;
+    display: none;
+}
+.replay{
+    width: 120px;
+}
+.button{
+    height: 21px;
+    border: 1px solid lightgray;
+    background-color: rgb(224, 224, 224);
+    cursor: pointer;
+    transition: 0.2s linear;
+    white-space: nowrap;
+}
+.button:hover{
+    background-color: rgb(255, 255, 255);
+}
+
+/* resign */
+.resign-container{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
 }

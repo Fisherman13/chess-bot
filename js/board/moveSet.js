@@ -14,7 +14,7 @@ function getMoveset(board, i, x, y, moveCheck){
 		let checkX = x + ((isWhite) ? -1 : 1);
 		let checkX2 = (isWhite) ? x - 1 : x + 1;
 
-		if(checkX2 > -1){
+		if(checkX2 > -1 && checkX2 < 8){
 			if(board[checkX2][y] == 6){
 				// Promotion is mandatory; the pawn cannot remain as a pawn.
 				if(checkX == ((isWhite) ? 0 : 7)){
@@ -42,7 +42,7 @@ function getMoveset(board, i, x, y, moveCheck){
 		pawnCheck();
 
 		function pawnCheck(){
-			if(checkX < 0 || checkX > 8 || checkY < 0 || checkY > 8){
+			if(checkX < 0 || checkX > 7 || checkY < 0 || checkY > 7){
 				return;
 			}
 			if(board[checkX][checkY] != 6){

@@ -92,7 +92,7 @@ function mate(color){
         highlightKing((color == "white"), true);
     }
 	
-    winner(color)
+    winner(invertColor(color))
 }
 function highlightKing(color, isMate){
     let loc = getKingLocation(color);
