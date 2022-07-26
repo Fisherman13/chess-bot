@@ -14,7 +14,7 @@ function makeMove(piece, x, y){
 					move(board, clickedPiece.row, clickedPiece.col, x, y, true);
 				}
 				if(i == 1){
-					kill(board, clickedPiece.row, clickedPiece.col, x, y, true)
+					capture(board, clickedPiece.row, clickedPiece.col, x, y, true)
 				}
 				if(i == 2){
 					promote(board, clickedPiece.row, clickedPiece.col, x, y, 0, true);
@@ -47,7 +47,7 @@ function move(board, fromX, fromY, toX, toY, save){
 		moveList.push([[fromX, fromY],[toX, toY]])
 	}
 }
-function kill(board, fromX, fromY, toX, toY, save){
+function capture(board, fromX, fromY, toX, toY, save){
 	if(save){
 		updateCastleMoved(fromX, fromY);
 	}

@@ -200,7 +200,7 @@ function movePiece(move){
 				from.col = move[1][1];
 
 				if(UIboard[move[1][0]][move[1][1]].name != null){
-					UIboard[move[1][0]][move[1][1]].kill();
+					UIboard[move[1][0]][move[1][1]].capture();
 				}
 
 				UIboard[move[1][0]][move[1][1]] = from;
@@ -232,7 +232,7 @@ function movePiece(move){
 
 		if(to.color != from.color){
 			if(to.name != null && from.name != null){
-				to.kill();
+				to.capture();
 			}
 		}
 		
@@ -255,7 +255,7 @@ function createPiece(color, name, row, col){
 	UIboard[row][col] = {
 		color: color,
 		name: name,
-		kill: k,
+		capture: k,
 		row: row,
 		col: col
 	}
@@ -365,7 +365,7 @@ function highlightMoves(piece){
 				el.style = style;
 			}
 		}
-		if(i == 1){	// kill moves
+		if(i == 1){	// capture moves
 			for (let i = 0; i < subArray.length; i++) {
 				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
 				el.style = style;
@@ -390,7 +390,7 @@ function getStyle(i){
         case 0:
             return `fill: ${COLOR_HOVER}`;
         case 1:
-            return `fill: ${COLOR_KILL}`;
+            return `fill: ${COLOR_CAPTURE}`;
         case 2:
             return `fill: ${COLOR_PROMOTION}`;
         case 3:
@@ -399,7 +399,7 @@ function getStyle(i){
 }
 function logError(msg){
 	console.log(`error: ${msg}`);
-	document.getElementById("error").innerText = msg;
+	// document.getElementById("error").innerText = msg;
 }
 function isClicked(){
     return (clickedPiece != null && clickedPiece.name != null)

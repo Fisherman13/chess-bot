@@ -23,12 +23,17 @@
 	<div class="victory-overlay-container">
 		<div id="winner" class="victory-overlay"></div>
 	</div>
-	
-	<div class="title-container">
-		<h1 class="title">Chess Bot</h1>
-		<img class="chess-bot" src="img/chessBot.png">
+
+	<div id="promotionOverlay" class="promotion-overlay">
+		<div id="promotionContainer" class="promotion-container"></div>
 	</div>
 	
+	<div class="header">
+		<div class="title-container">
+			<h1 class="title">Chess Bot</h1>
+			<img class="chess-bot" src="img/chessBot.png">
+		</div>
+	</div>
 
 	<div class="timer-container">
 		<div id="timeW" class="timer white">0</div>
@@ -51,54 +56,40 @@
 		<button onclick="replayMatch()" class="replay button" id="replay">Replay match</button>
 	</div>
 
-	<h3 class="error" id="error"></h3>
+	<div class="info-container">
+		<h3 class="error" id="error"></h3>
 
-	<h3 class="legend-title">Moves</h3>
-	<div class="divider"></div>
-	<div class="moves" id="moves"></div>
-
-	<div id="legend" class="legend-container">
-		<h3 class="legend-title">Color legend</h3>
+		<h3 class="legend-title">Moves</h3>
 		<div class="divider"></div>
+		<div class="moves" id="moves"></div>
 
-		<div class="legend-item-row">
-			<div class="legend-item">
-				<p class="legend-text">Move</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorMove" class="legend-color"></div>
+		<div id="legend" class="legend-container">
+			<h3 class="legend-title">Color legend</h3>
+			<div class="divider"></div>
+
+			<div class="legend-item-row">
+				<div class="legend-item color-move">
+					<p class="color-move" class="legend-text">Move</p>
+				</div>
+				<div class="legend-item color-capture">
+					<p class="color-capture" class="legend-text">Capture</p>
+				</div>
+				<div class="legend-item color-castle">
+					<p class="color-castle" class="legend-text">Castle</p>
+				</div>
 			</div>
-			<div class="legend-item">
-				<p class="legend-text">Capture</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorKill" class="legend-color"></div>
-			</div>
-			<div class="legend-item">
-				<p class="legend-text">Castle</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorCastle" class="legend-color"></div>
+			<div class="legend-item-row">
+				<div class="legend-item color-promotion">
+					<p class="color-promotion" class="legend-text">Promotion</p>
+				</div>
+				<div class="legend-item color-check">
+					<p class="color-check" class="legend-text">Check</p>
+				</div>
+				<div class="legend-item color-mate">
+					<p class="color-mate" class="legend-text">Mate</p>
+				</div>
 			</div>
 		</div>
-		<div class="legend-item-row">
-			<div class="legend-item">
-				<p class="legend-text">Promotion</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorPromotion" class="legend-color"></div>
-			</div>
-			<div class="legend-item">
-				<p class="legend-text">Check</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorCheck" class="legend-color"></div>
-			</div>
-			<div class="legend-item">
-				<p class="legend-text">Mate</p>
-				<p class="legend-text-divider">:</p>
-				<div id="colorMate" class="legend-color"></div>
-			</div>
-		</div>
-	</div>
-
-	<div id="promotionOverlay" class="promotion-overlay">
-		<div id="promotionContainer" class="promotion-container"></div>
 	</div>
 
 	<div class="footer"><p id="footer">Made by: Tonio grijpma | version 1.0.9</p></div>

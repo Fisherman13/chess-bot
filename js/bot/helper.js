@@ -127,7 +127,7 @@ function executeBotMove(board, m, save){
             move(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 1:
-            kill(board, m.x, m.y, m.toX, m.toY, save);
+            capture(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 2:
             let promoteTo = (BOT_COLOR == "black") ? 14 : 4

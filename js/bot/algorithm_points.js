@@ -207,7 +207,7 @@ function calcOptions(board, x, y){
         for (let i2 = 0; i2 < moveSet.length; i2++) {
             const move = moveSet[i2];
             
-            if(i == 1){ // kill
+            if(i == 1){ // capture
                 r += (pieceValue(board, move.x, move.y) / 3);
                 continue;
             }

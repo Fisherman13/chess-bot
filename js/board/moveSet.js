@@ -1,7 +1,7 @@
 function getMoveset(board, i, x, y, moveCheck){
 	let moves = [];
 	let openPositions = [];
-	let killMoves = [];
+	let captureMoves = [];
 	let promotion = [];
 	let castle = [];
 	let checks = [];
@@ -31,7 +31,7 @@ function getMoveset(board, i, x, y, moveCheck){
 			}
 		}
 
-		// kills & promotion
+		// capture & promotion
 		let checkY = y + ((isWhite) ? -1 : 1);
 		checkX = x + ((isWhite) ? -1 : 1);
 
@@ -55,7 +55,7 @@ function getMoveset(board, i, x, y, moveCheck){
 								addToAr(promotion, checkX, checkY);
 							}
 						}else{
-							addToKillMoves(checkX, checkY);
+							addToCaptureMoves(checkX, checkY);
 
 							if(checkX == 0){
 								addToAr(openPositions, checkX, checkY);
@@ -71,7 +71,7 @@ function getMoveset(board, i, x, y, moveCheck){
 								addToAr(promotion, checkX, checkY);
 							}
 						}else{
-							addToKillMoves(checkX, checkY);
+							addToCaptureMoves(checkX, checkY);
 
 							if(checkX == 7){
 								addToAr(openPositions, checkX, checkY);
@@ -249,22 +249,22 @@ function getMoveset(board, i, x, y, moveCheck){
 		}else{
 			if(isWhite){
 				if(board[checkX][checkY] > 9){
-					addToKillMoves(checkX, checkY);
+					addToCaptureMoves(checkX, checkY);
 				}
 			}else{
 				if(board[checkX][checkY] < 10){
-					addToKillMoves(checkX, checkY);
+					addToCaptureMoves(checkX, checkY);
 				}
 			}
 			return true;
 		}
 	}
 
-	function addToKillMoves(toX, toY){
+	function addToCaptureMoves(toX, toY){
 		if(isKing(toX, toY)){
 			addToAr(checks, toX, toY);
 		}else{
-			addToAr(killMoves, toX, toY);
+			addToAr(captureMoves, toX, toY);
 		}
 	}
 	function addToAr(ar, toX, toY){
@@ -281,7 +281,7 @@ function getMoveset(board, i, x, y, moveCheck){
 	}
 
 	moves.push(openPositions);
-	moves.push(killMoves);
+	moves.push(captureMoves);
 	moves.push(promotion);
 	moves.push(castle);
 	moves.push(checks);

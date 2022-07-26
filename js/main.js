@@ -4,7 +4,7 @@ const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
 
 const COLOR_HOVER = "#fbd287"
-const COLOR_KILL = "#f36969";
+const COLOR_CAPTURE = "#f36969";
 const COLOR_CASTLE = "rgb(209 90 209)";
 const COLOR_PROMOTION = "#952495";
 const COLOR_CHECK = "rgb(110, 110, 255)"
@@ -17,7 +17,7 @@ const PIECEWORTH = [1, 5, 3, 3, 9, 0]		// capture worth of the pieces
 const BOT_CHECK_DELAY = 100;				// delay at which the program checks if it can make a move
 const BOT_MOVE_DELAY = 500;					// delay for the robot to animate it's move
 const TIME_UPDATE_DALAY = 250;				// interval in witch the timer will update
-const REPLAY_SPEED = 500;
+const REPLAY_SPEED = 1000;
 
 const BOARD_LAYOUT = [
 	["a8","b8","c8","d8","e8","f8","g8","h8"],
@@ -86,7 +86,7 @@ function botCheck(){
 		}
 
 		// change algorithm here
-		let move = botpoints(BOT_COLOR); //botPointsSingle
+		let move = botpoints(BOT_COLOR);
 
 		if(move == null){
 			// finished
@@ -150,12 +150,22 @@ function formatMiliseconds(t){
 }
 
 function colorLegend(){
-	document.getElementById("colorMove").style = `background-color: ${COLOR_HOVER}`
-	document.getElementById("colorKill").style = `background-color: ${COLOR_KILL}`
-	document.getElementById("colorCastle").style = `background-color: ${COLOR_CASTLE}`
-	document.getElementById("colorPromotion").style = `background-color: ${COLOR_PROMOTION}`
-	document.getElementById("colorCheck").style = `background-color: ${COLOR_CHECK}`
-	document.getElementById("colorMate").style = `background-color: ${COLOR_MATE}`
+	let classes = [
+		["color-move", COLOR_HOVER],
+		["color-capture", COLOR_CAPTURE],
+		["color-castle", COLOR_CASTLE],
+		["color-promotion", COLOR_PROMOTION],
+		["color-check", COLOR_CHECK],
+		["color-mate", COLOR_MATE],
+	];
+
+	for (let i = 0; i < classes.length; i++) {
+		let els = document.getElementsByClassName(classes[i][0]);
+
+		for (let i2 = 0; i2 < els.length; i2++) {
+			els[i2].style.color = classes[i][1];
+		}
+	}
 }
 function flipBoard(){
 	document.getElementById("board").classList.add("flip");

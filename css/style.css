@@ -49,7 +49,7 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin: 20px 0px 20px 0px;
+    padding: 20px 0px 20px 0px;
 }
 .board-container{
     display: flex;
@@ -114,31 +114,31 @@ body{
     margin-top: 40vh;
 }
 
+.info-container{}
+
 /* legend */
 .legend-container{
     margin-top: 50px;
 }
-.legend-color{
-    width: 22px;
-    height: 22px;
-    border: 1px solid black;
-    background-color: red;
-}
 .legend-item{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    border: 1px solid;
+    color: inherit;
+    border-radius: 5px;
+    margin: 0px 5px 0px 5px;
+    width: 120px;
+    text-align: center;
+    font-size: 20px;
+    height: fit-content;
+    padding: 3px 0px 3px 0px;
+}
+.legend-item p{
+    margin: 0px;
 }
 .legend-text{
     margin: 0px;
     font-size: 19px;
     width: 105px;
     text-align: center;
-}
-.legend-text-divider{
-    margin: 0px;
-    font-size: 17px;
-    padding: 0px 10px 0px 10px;
 }
 .divider{
     width: 100%;
@@ -149,6 +149,7 @@ body{
     font-size: 26px;
     margin: 5px 0px 5px 0px;
     text-align: center;
+    font-weight: 200;
 }
 .legend-item-row{
     display: flex;
@@ -180,7 +181,11 @@ body{
 .footer{
     padding-left: 5px;
     font-size: 13px;
-    margin-top: 40px;
+    padding-top: 40px;
+}
+.footer p{
+    margin: 0px;
+    padding-bottom: 10px;
 }
 
 /* overlay */
@@ -226,12 +231,15 @@ body{
     width: 120px;
 }
 .button{
-    height: 21px;
     border: 1px solid lightgray;
     background-color: rgb(224, 224, 224);
     cursor: pointer;
     transition: 0.2s linear;
     white-space: nowrap;
+    padding: 2px 15px 2px 15px;
+    border-radius: 5px;
+    font-size: 17px;
+    width: fit-content;
 }
 .button:hover{
     background-color: rgb(255, 255, 255);
