@@ -86,11 +86,9 @@ function castle(board, rookX, rookY, save){
 
 	if(save){
 		if(isWhite){
-			hasMoved[0] = true;
 			hasMoved[1] = true;
 		}else{
-			hasMoved[2] = true;
-			hasMoved[3] = true;
+			hasMoved[4] = true;
 		}
 	}
 }

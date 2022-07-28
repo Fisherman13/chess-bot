@@ -24,7 +24,6 @@ the highest value left will be the move that is played.
 - promotions visually stay pawns by match replays
 - proper chess notation
 - prevent freezing the UI when making the tree
-- after the opponent castles, the user cannot castle anymore on that side
 
 ## future features
 - improve end game
