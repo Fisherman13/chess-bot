@@ -174,6 +174,12 @@ function syncUI(){
 	for (let i = 0; cycleCount < moveList.length; cycleCount++) {
 		let move = moveList[cycleCount];
 		movePiece(move);
+
+		// highlight previous move
+		if(turnColor == BOT_COLOR){
+			highlightPreviousMove(move[0][0], move[0][1])
+			highlightPreviousMove(move[1][0], move[1][1])
+		}
 	}
 }
 function movePiece(move){
@@ -314,7 +320,7 @@ function highlightPiece(piece){
 	let el = document.getElementById(`${piece.row}-${piece.col}`);
 
 	if(!isCheckHighlight(el)){
-		el.style = `fill: ${COLOR_HOVER}`;
+		el.style.fill = COLOR_HOVER;
 	}
 }
 function removeHighlight(removeCheck){
@@ -340,6 +346,11 @@ function removeHighlight(removeCheck){
 				squares[i].style.fill = "";
 			}
         }
+		if(removeCheck){
+			if(squares[i].style.stroke != ""){
+				squares[i].style.stroke = "";
+			}
+		}
     }
 
 	isHighlighting = false;
@@ -351,50 +362,48 @@ function isCheckHighlight(square){
 
 function highlightMoves(piece){
 	let moves = getMovesetFromObject(piece);
-    let style = "";
 
 	isHighlighting = true;
     
 	for(let i = 0; i < moves.length; i++){
 		subArray = moves[i];
-        style = getStyle(i);
 
 		if(i == 0){	// locations
-			for (let i = 0; i < subArray.length; i++) {
-				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
-				el.style = style;
+			for (let i2 = 0; i2 < subArray.length; i2++) {
+				let el = document.getElementById(`${subArray[i2].x}-${subArray[i2].y}`);
+				el.style.fill = getStyleColor(i);
 			}
 		}
 		if(i == 1){	// capture moves
-			for (let i = 0; i < subArray.length; i++) {
-				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
-				el.style = style;
+			for (let i2 = 0; i2 < subArray.length; i2++) {
+				let el = document.getElementById(`${subArray[i2].x}-${subArray[i2].y}`);
+				el.style.fill = getStyleColor(i);
 			}
 		}
 		if(i == 2){	// promotion
-			for (let i = 0; i < subArray.length; i++) {
-				let el = document.getElementById(`${subArray[i].x}-${subArray[i].y}`);
-				el.style = style;
+			for (let i2 = 0; i2 < subArray.length; i2++) {
+				let el = document.getElementById(`${subArray[i2].x}-${subArray[i2].y}`);
+				el.style.fill = getStyleColor(i);
 			}
 		}
 		if(i == 3){	// castle
 			for (let i2 = 0; i2 < subArray.length; i2++) {
                 let el = document.getElementById(`${(piece.color == "white") ? 7 : 0}-${4}`);
-                el.style = style;
+                el.style.fill = getStyleColor(i);
 			}
 		}
 	}
 }
-function getStyle(i){
+function getStyleColor(i){
     switch (i) {
         case 0:
-            return `fill: ${COLOR_HOVER}`;
+            return COLOR_HOVER;
         case 1:
-            return `fill: ${COLOR_CAPTURE}`;
+            return COLOR_CAPTURE;
         case 2:
-            return `fill: ${COLOR_PROMOTION}`;
+            return COLOR_PROMOTION;
         case 3:
-            return `fill: ${COLOR_CASTLE}`;
+            return COLOR_CASTLE;
     }
 }
 function logError(msg){
@@ -450,11 +459,13 @@ function mate(color){
 	
     winner(invertColor(color))
 }
+function highlightPreviousMove(x, y){
+	document.getElementById(`${x}-${y}`).style.stroke = COLOR_PREV_MOVE;
+}
 function highlightKing(color, isMate){
     let loc = getKingLocation(color);
-    let style = `fill: ${(isMate) ? COLOR_MATE : COLOR_CHECK}`
 
-    document.getElementById(`${loc[0]}-${loc[1]}`).style = style;
+    document.getElementById(`${loc[0]}-${loc[1]}`).style.fill = (isMate) ? COLOR_MATE : COLOR_CHECK;
 }
 function getKingLocation(color){
     let kingNumber = (color) ? 5 : 15;

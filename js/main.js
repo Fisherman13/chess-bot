@@ -1,4 +1,4 @@
-const VERSION = "1.0.9"
+const VERSION = "1.0.10"
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -9,6 +9,7 @@ const COLOR_CASTLE = "rgb(209 90 209)";
 const COLOR_PROMOTION = "#952495";
 const COLOR_CHECK = "rgb(110, 110, 255)"
 const COLOR_MATE = "rgb(37, 37, 255)"
+const COLOR_PREV_MOVE = "rgb(255 152 0)"
 
 const SQUARE_WIDTH = 60;					// square size of the board in px
 const BOARD_WIDTH = (SQUARE_WIDTH * 8) + 2;	// total with of the board
@@ -47,6 +48,7 @@ let isHighlighting = false;					// this prevents highlights being cleared multip
 let startTime = new Date().getTime();
 let time = [0, 0];							// time in ms elapsed for each color
 let timeInterval = null;					// interval that updates the paytime
+// let lastMove = [[],[]];
 
 document.addEventListener('DOMContentLoaded', init)
 

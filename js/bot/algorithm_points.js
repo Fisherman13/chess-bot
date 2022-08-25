@@ -29,7 +29,8 @@ function botpoints(color){
         minMax = !minMax;
     }
 
-    console.log(tree);
+    // show the weights for debugging
+    // console.log(tree);
 
     let move = allMoves[getMoveIndexFromTree(tree)];
     let endTime = performance.now();
