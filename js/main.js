@@ -1,4 +1,4 @@
-const VERSION = "1.0.10"
+const VERSION = "1.0.11"
 
 const PLAYER_COLOR = "white";
 const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
@@ -48,7 +48,6 @@ let isHighlighting = false;					// this prevents highlights being cleared multip
 let startTime = new Date().getTime();
 let time = [0, 0];							// time in ms elapsed for each color
 let timeInterval = null;					// interval that updates the paytime
-// let lastMove = [[],[]];
 
 document.addEventListener('DOMContentLoaded', init)
 

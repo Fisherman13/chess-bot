@@ -295,6 +295,7 @@ function createPiece(color, name, row, col){
 		this.element.style.width = `${width}px`;
 		this.element.style.height = `${width}px`;
 		this.element.style.cursor = "default";
+		this.element.classList.remove("flip-piece");
 
 		if(this.color == "white"){
 			x = (captured[0].length % 2 == false) ? width : 0
@@ -310,8 +311,6 @@ function createPiece(color, name, row, col){
 		
 		this.element.setAttribute("x", x);
 		this.element.setAttribute("y", y);
-
-		// moveElement();
 	}
 }
 function highlightPiece(piece){

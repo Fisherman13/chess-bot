@@ -22,11 +22,8 @@ function botpoints(color){
 
     minifyTree(tree, 0);
 
-    let minMax = true;
     for (let i = 0; i < treeDepth; i++) {
-        traverseTree(tree, null, treeDepth - i, 0, false, minMax);
-        traverseTree(tree, null, treeDepth - i, 0, true, minMax);
-        minMax = !minMax;
+        traverseTree(tree, null, treeDepth - i, 0);
     }
 
     // show the weights for debugging
@@ -81,18 +78,15 @@ function minifyTree(tree, it){
     tree.splice(1, 1);
 }
 
-function traverseTree(tree, node, target, it, mode, minmax){
+function traverseTree(tree, node, target, it){
     if(target == 0){
         return;
     }
 
     if(it == target){
-        if(mode){
-            node[0] = node[0] - node[1];
-            node.splice(1,1);
-        }else{
-            node[1] = highest(node[1])
-        }
+        node[1] = highest(node[1])
+        node[0] = node[0] - node[1];
+        node.splice(1,1);
 
         return;
     }
@@ -102,9 +96,9 @@ function traverseTree(tree, node, target, it, mode, minmax){
     }
     for (let i = 0; i < node[1].length; i++) {
         if(node == null){
-            traverseTree(tree, tree[1][i], target, it + 1, mode, minmax)
+            traverseTree(tree, tree[1][i], target, it + 1)
         }else{
-            traverseTree(tree, node[1][i], target, it + 1, mode, minmax)
+            traverseTree(tree, node[1][i], target, it + 1)
         }
     }
 }

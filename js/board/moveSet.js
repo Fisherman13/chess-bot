@@ -1,5 +1,4 @@
 function getMoveset(board, i, x, y, moveCheck){
-	let moves = [];
 	let openPositions = [];
 	let captureMoves = [];
 	let promotion = [];
@@ -45,39 +44,31 @@ function getMoveset(board, i, x, y, moveCheck){
 			if(checkX < 0 || checkX > 7 || checkY < 0 || checkY > 7){
 				return;
 			}
-			if(board[checkX][checkY] != 6){
-				if(isWhite){
-					if(board[checkX][checkY] > 9){
-						if(checkX == ((isWhite) ? 0 : 7)){
-							if(isKing(checkX, checkY)){
-								addToAr(checks, checkX, checkY);
-							}else{
-								addToAr(promotion, checkX, checkY);
-							}
-						}else{
-							addToCaptureMoves(checkX, checkY);
+			if(board[checkX][checkY] == 6){
+				return;
+			}
 
-							if(checkX == 0){
-								addToAr(openPositions, checkX, checkY);
-							}
-						}
-					}
+			if(isWhite){
+				if(board[checkX][checkY] < 9){
+					return;
+				}
+			}else{
+				if(board[checkX][checkY] > 9){
+					return;
+				}
+			}
+			
+			if(checkX == ((isWhite) ? 0 : 7)){
+				if(isKing(checkX, checkY)){
+					addToAr(checks, checkX, checkY);
 				}else{
-					if(board[checkX][checkY] < 9){
-						if(checkX == ((isWhite) ? 0 : 7)){
-							if(isKing(checkX, checkY)){
-								addToAr(checks, checkX, checkY);
-							}else{
-								addToAr(promotion, checkX, checkY);
-							}
-						}else{
-							addToCaptureMoves(checkX, checkY);
+					addToAr(promotion, checkX, checkY);
+				}
+			}else{
+				addToCaptureMoves(checkX, checkY);
 
-							if(checkX == 7){
-								addToAr(openPositions, checkX, checkY);
-							}
-						}
-					}
+				if(checkX == (isWhite) ? 0 : 7){
+					addToAr(openPositions, checkX, checkY);
 				}
 			}
 		}
@@ -106,7 +97,7 @@ function getMoveset(board, i, x, y, moveCheck){
 						}
 					}
 
-					addToAr(castle, (isWhite) ? 7 : 0, 4);
+					addToAr(castle, (isWhite) ? 7 : 0, 4, true);
 				}
 
 				break;
@@ -130,7 +121,7 @@ function getMoveset(board, i, x, y, moveCheck){
 						}
 					}
 
-					addToAr(castle, (isWhite) ? 7 : 0, 4);
+					addToAr(castle, (isWhite) ? 7 : 0, 4, true);
 				}
 
 				break;
@@ -141,7 +132,7 @@ function getMoveset(board, i, x, y, moveCheck){
 	// knight
 	if(i == 2){
 		// move pattern
-		let movePatern = [{x: 1, y: 2}, {x: -1, y: 2},{x: 1, y: -2}, {x: -1, y: -2},{x: 2, y: 1}, {x: 2, y: -1},{x: -2, y: 1}, {x: -2, y: -1}];
+		const movePatern = [{x: 1, y: 2}, {x: -1, y: 2},{x: 1, y: -2}, {x: -1, y: -2},{x: 2, y: 1}, {x: 2, y: -1},{x: -2, y: 1}, {x: -2, y: -1}];
 
 		for (let i2 = 0; i2 < movePatern.length; i2++) {
 			checkPath(x + movePatern[i2].x, y + movePatern[i2].y)
@@ -267,8 +258,9 @@ function getMoveset(board, i, x, y, moveCheck){
 			addToAr(captureMoves, toX, toY);
 		}
 	}
-	function addToAr(ar, toX, toY){
-		if(moveCheck){
+	function addToAr(ar, toX, toY, specialMove = false){
+		
+		if(moveCheck || specialMove){
 			if(canDoMove(board, x, y, toX, toY)){
 				ar.push({x: toX, y: toY})
 			}
@@ -280,13 +272,7 @@ function getMoveset(board, i, x, y, moveCheck){
 		return board[x][y] == 5 || board[x][y] == 15
 	}
 
-	moves.push(openPositions);
-	moves.push(captureMoves);
-	moves.push(promotion);
-	moves.push(castle);
-	moves.push(checks);
-
-	return moves;
+	return [openPositions, captureMoves, promotion, castle, checks];
 }
 function getMovesetFromObject(piece){
 	return getMoveset(board, pieceNameToInt(piece.name), piece.row, piece.col, true);

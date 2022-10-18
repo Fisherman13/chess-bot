@@ -20,6 +20,7 @@ the tree is then traversed, the highest value of each branch are subtracted, lea
 the highest value left will be the move that is played.
 
 ## TODO
+- statemate sometimes does not show winner message
 - en passant
 - promotions visually stay pawns by match replays
 - proper chess notation
