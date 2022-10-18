@@ -19,7 +19,7 @@ function mateCheck(board, white){
     }
 }
 
-// 0 = nothing,  1 = check, 2 = mate, 3 statemate draw
+// 0 = nothing,  1 = check, 2 = mate, 3 stalemate draw
 function getState(board, color){
     let allChecks = getCheckedPieces(board, color == "white");
     let r = 0;
