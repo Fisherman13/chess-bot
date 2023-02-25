@@ -29,6 +29,33 @@ function createUIBoard(){
 	captureL.style.width = ((SQUARE_WIDTH / 1.5) * 2) + "px";
 	captureR.style.width = ((SQUARE_WIDTH / 1.5) * 2) + "px";
 }
+function initOptions(){
+	let colorsEls = document.querySelectorAll(".toggle-color");
+	let algorithmEls = document.querySelectorAll(".toggle-bot");
+
+	colorsEls.forEach(function(el){
+		el.addEventListener("click", function(){
+			colorsEls.forEach(function(el2){
+				el2.classList.remove("toggle-active");
+			})
+
+			el.classList.toggle("toggle-active");
+			playerColor = el.id;
+			botColor = invertColor(playerColor);
+			flipBoard();
+		})
+	})
+	algorithmEls.forEach(function(el){
+		el.addEventListener("click", function(){
+			algorithmEls.forEach(function(el2){
+				el2.classList.remove("toggle-active");
+			})
+
+			el.classList.toggle("toggle-active");
+			botMode = el.id;
+		})
+	})
+}
 function mousemove(event){
     let {x, y} = getCoordsFromEvent(event);
     let piece = UIboard[x][y];
@@ -46,7 +73,7 @@ function mousemove(event){
     if(piece.name == null){
         return;
     }
-    if(piece.color != PLAYER_COLOR){
+    if(piece.color != playerColor){
         return;
     }
 	if(piece.color != turnColor){
@@ -83,7 +110,7 @@ function mouseclick(event){
         }
     }
 
-    if(piece.color != null && piece.color != PLAYER_COLOR){
+    if(piece.color != null && piece.color != playerColor){
         highlightMoves(piece)
     }
 }
@@ -176,7 +203,7 @@ function syncUI(){
 		movePiece(move);
 
 		// highlight previous move
-		if(turnColor == BOT_COLOR){
+		if(turnColor == botColor){
 			highlightPreviousMove(move[0][0], move[0][1])
 			highlightPreviousMove(move[1][0], move[1][1])
 		}
@@ -277,7 +304,7 @@ function createPiece(color, name, row, col){
 
 	piece.setAttribute("href", `img/${name}_${(color == "white") ? "w" : "b"}.svg`);
 
-	if(color != PLAYER_COLOR){
+	if(color != playerColor){
 		piece.setAttribute("style", "pointer-events: none");
 	}
 
@@ -425,7 +452,7 @@ function createPromotionOverlay(){
 
 		let image = new Image();
 		image.className = "promotion-image";
-		image.src = `img/${names[i]}_${(PLAYER_COLOR == "white") ? "w" : "b"}.svg`;
+		image.src = `img/${names[i]}_${(playerColor == "white") ? "w" : "b"}.svg`;
 
 		container.append(image);
 		el.append(container);
@@ -484,8 +511,8 @@ function winner(color){
 		addElToMoves(color, `stalemate draw`);
 		el.innerText = `Stalemate draw`;
 	}else if(color == "resign"){
-		addElToMoves(BOT_COLOR, `Winner by resign: ${BOT_COLOR}`);
-		el.innerText = `Winner by resign: ${BOT_COLOR}`;
+		addElToMoves(botColor, `Winner by resign: ${botColor}`);
+		el.innerText = `Winner by resign: ${botColor}`;
 	}else{
 		addElToMoves(invertColor(color), `Winner: ${color}`);
 		el.innerText = `Winner: ${color}`;
@@ -508,8 +535,11 @@ function addElToMoves(color, text){
 function clearMoves(){
 	document.getElementById("moves").innerHTML = "";
 }
-function displayStats(movesChecked, ms){
-	document.getElementById("stats").innerText = `Simulated ${movesChecked} moves in ${(ms / 1000).toFixed(2)}s (${Math.round(movesChecked / (Math.floor(ms) / 1000))}/sec)`;
+function displaySimStats(movesChecked, ms){
+	displayStats(`Simulated ${movesChecked} moves in ${(ms / 1000).toFixed(2)}s (${Math.round(movesChecked / (Math.floor(ms) / 1000))}/sec)`);
+}
+function displayStats(str){
+	document.getElementById("stats").innerText = str;
 }
 function clearStats(){
 	document.getElementById("stats").innerText = "";
@@ -521,7 +551,7 @@ function highlightSquare(x, y){
 	let boardEl = document.getElementById("board");
 	let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
-	if(PLAYER_COLOR == "black"){
+	if(playerColor == "black"){
 		text.classList.add("flip-piece");
 	}
 

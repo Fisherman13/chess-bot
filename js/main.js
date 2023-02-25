@@ -1,7 +1,4 @@
-const VERSION = "1.0.11"
-
-const PLAYER_COLOR = "white";
-const BOT_COLOR = (PLAYER_COLOR == "white") ? "black" : "white";
+const VERSION = "1.2.0"
 
 const COLOR_HOVER = "#fbd287"
 const COLOR_CAPTURE = "#f36969";
@@ -31,6 +28,9 @@ const BOARD_LAYOUT = [
 	["a1","b1","c1","d1","e1","f1","g1","h1"]
 ]
 
+let playerColor = "white";
+let botColor = "black";
+
 let hasMoved = [false, false, false, false, false, false]	// keep track if the rooks & kings have moved for Castling
 let clickedPiece = null;					// what piece has been clicked last
 
@@ -48,31 +48,28 @@ let isHighlighting = false;					// this prevents highlights being cleared multip
 let startTime = new Date().getTime();
 let time = [0, 0];							// time in ms elapsed for each color
 let timeInterval = null;					// interval that updates the paytime
+let botMode = "subtraction";
 
 document.addEventListener('DOMContentLoaded', init)
 
 function init(){
 	createUIBoard();
-
+	initOptions();
 	createInternalBoard();
 
-	if(PLAYER_COLOR == "black"){
+	if(playerColor == "black"){
 		flipBoard();
 	}
 
 	createPromotionOverlay();
-
 	colorLegend();
-
 	setInterval(botCheck, BOT_CHECK_DELAY);
-
 	startTimer();
-
 	setVersion();
 }
 
 function botCheck(){
-	if(turnColor != BOT_COLOR) return;
+	if(turnColor != botColor) return;
 
 	if(isBotWaiting) return;
 
@@ -87,7 +84,32 @@ function botCheck(){
 		}
 
 		// change algorithm here
-		let move = botpoints(BOT_COLOR);
+		//let move = botpoints2(botColor);
+
+		let move;
+		switch(botMode){
+			case "minimax":
+				move = botMinimax(botColor)
+				break;
+			case "subtraction":
+				move = botpoints(botColor)
+				break;
+			case "minimizer":
+				move = botMinOpponent(botColor)
+				break;
+			case "greedy":
+				move = botgreedy(botColor)
+				break;
+			case "spoints":
+				move = botPointsSingle(botColor)
+				break;
+			case "random":
+				move = botRandom(botColor)
+				break;
+			default:
+				move = botRandom(botColor)
+				break;
+		}
 
 		if(move == null){
 			// finished
@@ -169,12 +191,12 @@ function colorLegend(){
 	}
 }
 function flipBoard(){
-	document.getElementById("board").classList.add("flip");
+	document.getElementById("board").classList.toggle("flip");
 
 	let x = document.querySelectorAll(".piece");
 
 	for (let i = 0; i < x.length; i++) {
-		x[i].classList.add("flip-piece");
+		x[i].classList.toggle("flip-piece");
 	}
 }
 function setVersion(){
@@ -182,7 +204,7 @@ function setVersion(){
 }
 function resign(){
 	winner("resign");
-	highlightKing((BOT_COLOR == "black"), true);
+	highlightKing((botColor == "black"), true);
 	toggleResign(false);
 
 	if(!moveList.includes("resign")){

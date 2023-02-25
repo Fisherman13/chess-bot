@@ -1,10 +1,14 @@
+const MOVE_PATTERN_KNIGHT = [{x: 1, y: 2}, {x: -1, y: 2},{x: 1, y: -2}, {x: -1, y: -2},{x: 2, y: 1}, {x: 2, y: -1},{x: -2, y: 1}, {x: -2, y: -1}];
+const MOVE_PATTERN_KING = [{x: 1, y: 0}, {x: 0, y: 1},{x: 1, y: 1}, {x: -1, y: 0},{x: 0, y: -1}, {x: -1, y: -1},{x: -1, y: 1}, {x: 1, y: -1}];
+
 function getMoveset(board, i, x, y, moveCheck){
+	const isWhite = board[x][y] < 9;
+	
 	let openPositions = [];
 	let captureMoves = [];
 	let promotion = [];
 	let castle = [];
 	let checks = [];
-	let isWhite = board[x][y] < 9;
 
 	i = (i > 9) ? i -= 10 : i;
 
@@ -131,11 +135,8 @@ function getMoveset(board, i, x, y, moveCheck){
 
 	// knight
 	if(i == 2){
-		// move pattern
-		const movePatern = [{x: 1, y: 2}, {x: -1, y: 2},{x: 1, y: -2}, {x: -1, y: -2},{x: 2, y: 1}, {x: 2, y: -1},{x: -2, y: 1}, {x: -2, y: -1}];
-
-		for (let i2 = 0; i2 < movePatern.length; i2++) {
-			checkPath(x + movePatern[i2].x, y + movePatern[i2].y)
+		for (let i2 = 0; i2 < MOVE_PATTERN_KNIGHT.length; i2++) {
+			checkPath(x + MOVE_PATTERN_KNIGHT[i2].x, y + MOVE_PATTERN_KNIGHT[i2].y)
 		}
 	}
 
@@ -210,18 +211,17 @@ function getMoveset(board, i, x, y, moveCheck){
 	// king
 	if(i == 5){
 		// move pattern
-		let movePatern = [{x: 1, y: 0}, {x: 0, y: 1},{x: 1, y: 1}, {x: -1, y: 0},{x: 0, y: -1}, {x: -1, y: -1},{x: -1, y: 1}, {x: 1, y: -1}];
 		let otherKing = getKingLocation(!isWhite);
 
-		for (let i2 = 0; i2 < movePatern.length; i2++) {
-			if(!collidesWithKing(x + movePatern[i2].x, y + movePatern[i2].y, otherKing)){
-				checkPath(x + movePatern[i2].x, y + movePatern[i2].y);
+		for (let i2 = 0; i2 < MOVE_PATTERN_KING.length; i2++) {
+			if(!collidesWithKing(x + MOVE_PATTERN_KING[i2].x, y + MOVE_PATTERN_KING[i2].y, otherKing)){
+				checkPath(x + MOVE_PATTERN_KING[i2].x, y + MOVE_PATTERN_KING[i2].y);
 			}
 		}
 
 		function collidesWithKing(x, y, king){
-			for (let i2 = 0; i2 < movePatern.length; i2++) {
-				if(x == (king[0] + movePatern[i2].x) && y == (king[1] + movePatern[i2].y)){
+			for (let i2 = 0; i2 < MOVE_PATTERN_KING.length; i2++) {
+				if(x == (king[0] + MOVE_PATTERN_KING[i2].x) && y == (king[1] + MOVE_PATTERN_KING[i2].y)){
 					return true;
 				}
 			}

@@ -1,4 +1,5 @@
 function botRandom(color){
+    const startTime = performance.now();
     let allMoves = getAllMoves(board, color);
 
     if(allMoves.length == 0){
@@ -13,6 +14,7 @@ function botRandom(color){
         let randomMove = randomPiece.moveSet[i][Math.floor(Math.random() *randomPiece.moveSet[i].length)]
 
         if(randomPiece.moveSet[i].length != 0){
+            displayStats(`Random took ${((performance.now() - startTime) / 1000).toFixed(2)}ms`);
             return {x: randomPiece.x, y: randomPiece.y, toX: randomMove.x, toY: randomMove.y, type: i}
         }
     }
@@ -130,7 +132,7 @@ function executeBotMove(board, m, save){
             capture(board, m.x, m.y, m.toX, m.toY, save);
             break;
         case 2:
-            let promoteTo = (BOT_COLOR == "black") ? 14 : 4
+            let promoteTo = (botColor == "black") ? 14 : 4
             promote(board, m.x, m.y, m.toX, m.toY, promoteTo, save);
             break;
         case 3:

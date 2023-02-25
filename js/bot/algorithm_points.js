@@ -1,8 +1,7 @@
 // gives each possible move a value based on conditions
 // the best moves of each side are substracted, the highest value left will be the best move
-
+let movesChecked = 0;
 let treeDepth = 3;
-let movesChecked;
 
 function botpoints(color){
     let tree = [0];
@@ -11,6 +10,7 @@ function botpoints(color){
     let startTime = performance.now();
 
     movesChecked = 0;
+    treeDepth = 3;
 
     if(allMoves.length == 0){
         return;
@@ -30,10 +30,8 @@ function botpoints(color){
     // console.log(tree);
 
     let move = allMoves[getMoveIndexFromTree(tree)];
-    let endTime = performance.now();
-    let ms = endTime - startTime;
 
-    displayStats(movesChecked, ms);
+    displaySimStats(movesChecked, performance.now() - startTime);
 
     return move;
 }
@@ -63,7 +61,7 @@ function createTree(board, tree, i, color){
         tree[2][i2].push(allMoves, createBranch(newBoard, allMoves, invertColor(color)));
 
         // TODO: split up to not freeze UI
-        createTree(newBoard, tree[2][i2], i + 1, invertColor(color))
+        createTree(newBoard, tree[2][i2], i + 1, invertColor(color));
     }
 }
 function minifyTree(tree, it){
@@ -181,7 +179,7 @@ function valueMove(board, move, color){
             p += 1
             break;
         case 2:
-            p += 10000;
+            p += Infinity;
             break;
         case 3:
             p -= 10;
@@ -226,7 +224,7 @@ function calcOptions(board, x, y){
 function calcEarlygamePoints(type, p){
     switch (type) {
         case 0: // pawn
-            return (p *= 2);
+            return (p *= 3);
         case 2: // knight
             return (p *= 1.5);
         case 3: // bishop
@@ -239,6 +237,7 @@ function calcEarlygamePoints(type, p){
 function botPointsSingle(color){
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
     let pointOverview = [];
+    let startTime = performance.now();
 
     if(allMoves.length == 0){
         return;
@@ -251,6 +250,7 @@ function botPointsSingle(color){
         let points = valueMove(board, allMoves[i], color);
 
         pointOverview.push(points, allMoves[i]);
+        movesChecked++;
 
         if(points > highestPoints){
             highestPoints = points;
@@ -263,7 +263,7 @@ function botPointsSingle(color){
         return botRandom(color);
     }
 
-    console.log(pointOverview);
+    displaySimStats(movesChecked, performance.now() - startTime);
 
     return allMoves[highestPointIndex];
 }

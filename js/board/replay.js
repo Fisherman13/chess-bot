@@ -18,7 +18,7 @@ function replayMatch(){
 
     turnColor = "white";
 
-	if(PLAYER_COLOR == "black"){
+	if(playerColor == "black"){
 		flipBoard();
 	}
 

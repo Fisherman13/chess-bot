@@ -1,4 +1,5 @@
 function botgreedy(color){
+    const startTime = performance.now();
     let allMoves = getAllMoves(board, color);
     let allCaptureMoves = getAllCaptureMoves(allMoves);
 
@@ -19,6 +20,8 @@ function botgreedy(color){
             highestValueIndex = i;
         }
     }
+
+    displayStats(`Greedy took ${((performance.now() - startTime) / 1000).toFixed(2)}ms`);
 
     return allCaptureMoves[highestValueIndex];
 }

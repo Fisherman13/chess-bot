@@ -1,4 +1,5 @@
 function botMinOpponent(color){
+    const startTime = performance.now();
     let allMoves = splitAllMoveSet(getAllMoves(board, color));
 
     if(allMoves.length == 0){
@@ -22,6 +23,8 @@ function botMinOpponent(color){
             leastMovesIndex = i;
         }
     }
+
+    displayStats(`Minimizer took ${((performance.now() - startTime) / 1000).toFixed(2)}ms`);
 
     return allMoves[leastMovesIndex];
 }

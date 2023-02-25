@@ -18,6 +18,7 @@
 <script src="js/bot/algorithm_greedy.js"></script>
 <script src="js/bot/algorithm_min.js"></script>
 <script src="js/bot/algorithm_points.js"></script>
+<script src="js/bot/algorithm_points_minimax.js"></script>
 
 <body>
 	<div class="victory-overlay-container">
@@ -63,6 +64,24 @@
 		<div class="divider"></div>
 		<div class="moves" id="moves"></div>
 
+		<h3 class="legend-title">Opponent</h3>
+		<div class="divider"></div>
+		<div class="bot-container">
+			<button id="subtraction" class="button toggle-bot toggle-active">Subtraction</button>
+			<button id="minimizer" class="button toggle-bot">Minimizer</button>
+			<button id="minimax" class="button toggle-bot">Minimax</button>
+			<button id="greedy" class="button toggle-bot">Greedy</button>
+			<button id="spoints" class="button toggle-bot">Single Point</button>
+			<button id="random" class="button toggle-bot">Random</button>
+		</div>
+
+		<h3 class="legend-title">Color</h3>
+		<div class="divider"></div>
+		<div class="color-container">
+			<button id="white" class="button toggle-color toggle-active">White</button>
+			<button id="black" class="button toggle-color">Black</button>
+		</div>
+
 		<div id="legend" class="legend-container">
 			<h3 class="legend-title">Color legend</h3>
 			<div class="divider"></div>
@@ -92,6 +111,6 @@
 		</div>
 	</div>
 
-	<div class="footer"><p id="footer">Made by: Tonio grijpma | version 1.0.11</p></div>
+	<div class="footer"><p id="footer">Made by: Tonio grijpma | version 1.2.0</p></div>
 </body>
 </html>
